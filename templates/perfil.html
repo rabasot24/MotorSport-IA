@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - MotorSport</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #dc3545;
+            --accent-color: #ffc107;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0a0a0a;
+            color: #ffffff;
+            padding-top: 70px;
+        }
+
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.95) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(220, 53, 69, 0.3);
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: var(--primary-color) !important;
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            padding: 60px 0;
+            margin-bottom: 40px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .profile-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 5px solid var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            margin: 0 auto 20px;
+        }
+
+        .profile-card {
+            background: linear-gradient(145deg, #1a1a1a, #2d2d2d);
+            border: 2px solid rgba(220, 53, 69, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background-color: rgba(220, 53, 69, 0.1);
+            border: 2px solid var(--primary-color);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(220, 53, 69, 0.3);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            color: #888;
+            margin-top: 10px;
+        }
+
+        .activity-item {
+            background-color: #1a1a1a;
+            border-left: 3px solid var(--primary-color);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .activity-item:hover {
+            background-color: #2d2d2d;
+            transform: translateX(5px);
+        }
+
+        .badge-custom {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .badge-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .form-control {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 12px 15px;
+            border-radius: 10px;
+        }
+
+        .form-control:focus {
+            background-color: rgba(255, 255, 255, 0.08);
+            border-color: var(--primary-color);
+            color: #fff;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-flag-fill"></i> MotorSport
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/noticias">Noticias</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/vehiculos">Vehículos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/quiz">Quiz</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/perfil">
+                            <i class="bi bi-person-circle"></i> Perfil
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">
+                            <i class="bi bi-box-arrow-right"></i> Salir
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Profile Header -->
+    <section class="profile-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-3 text-center">
+                    <div class="profile-avatar">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <h1 class="display-5 fw-bold text-danger">{{ session.user if session.user else 'Usuario' }}</h1>
+                    <p class="lead text-muted">Miembro desde Noviembre 2025</p>
+                    <button class="btn btn-danger me-2" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                        <i class="bi bi-pencil-fill"></i> Editar Perfil
+                    </button>
+                    <button class="btn btn-outline-light">
+                        <i class="bi bi-gear-fill"></i> Configuración
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container py-5">
+        <div class="row">
+            <!-- Left Column: Stats -->
+            <div class="col-md-4">
+                <div class="profile-card">
+                    <h3 class="text-danger mb-4"><i class="bi bi-bar-chart-fill"></i> Estadísticas</h3>
+
+                    <div class="stat-box mb-3">
+                        <div class="stat-number">24</div>
+                        <div class="stat-label">Quiz completados</div>
+                    </div>
+
+                    <div class="stat-box mb-3">
+                        <div class="stat-number">85%</div>
+                        <div class="stat-label">Mejor puntuación</div>
+                    </div>
+
+                    <div class="stat-box mb-3">
+                        <div class="stat-number">12</div>
+                        <div class="stat-label">Vehículos favoritos</div>
+                    </div>
+
+                    <div class="stat-box">
+                        <div class="stat-number">47</div>
+                        <div class="stat-label">Noticias leídas</div>
+                    </div>
+                </div>
+
+                <!-- Badges -->
+                <div class="profile-card">
+                    <h3 class="text-danger mb-4"><i class="bi bi-trophy-fill"></i> Logros</h3>
+
+                    <div class="badge-custom">
+                        <div class="badge-icon">🏆</div>
+                        <h6>Experto en F1</h6>
+                        <small>Completa 10 quiz de Fórmula 1</small>
+                    </div>
+
+                    <div class="badge-custom">
+                        <div class="badge-icon">🎯</div>
+                        <h6>Precisión Total</h6>
+                        <small>Obtén 100% en un quiz</small>
+                    </div>
+
+                    <div class="badge-custom">
+                        <div class="badge-icon">📚</div>
+                        <h6>Lector Ávido</h6>
+                        <small>Lee 50 noticias</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Activity & Favorites -->
+            <div class="col-md-8">
+                <!-- Recent Activity -->
+                <div class="profile-card mb-4">
+                    <h3 class="text-danger mb-4"><i class="bi bi-clock-history"></i> Actividad Reciente</h3>
+
+                    <div class="activity-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6><i class="bi bi-trophy text-warning"></i> Quiz completado</h6>
+                                <p class="text-muted mb-0">Quiz de Circuitos Legendarios - Puntuación: 8/10</p>
+                            </div>
+                            <small class="text-muted">Hace 2 horas</small>
+                        </div>
+                    </div>
+
+                    <div class="activity-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6><i class="bi bi-newspaper text-primary"></i> Noticia leída</h6>
+                                <p class="text-muted mb-0">Red Bull presenta su monoplaza RB20</p>
+                            </div>
+                            <small class="text-muted">Hace 5 horas</small>
+                        </div>
+                    </div>
+
+                    <div class="activity-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6><i class="bi bi-heart-fill text-danger"></i> Vehículo favorito</h6>
+                                <p class="text-muted mb-0">Agregaste Ferrari F2004 a favoritos</p>
+                            </div>
+                            <small class="text-muted">Ayer</small>
+                        </div>
+                    </div>
+
+                    <div class="activity-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6><i class="bi bi-trophy text-warning"></i> Quiz completado</h6>
+                                <p class="text-muted mb-0">Quiz de Historia del Rally - Puntuación: 7/10</p>
+                            </div>
+                            <small class="text-muted">Hace 2 días</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Favorite Vehicles -->
+                <div class="profile-card">
+                    <h3 class="text-danger mb-4"><i class="bi bi-heart-fill"></i> Vehículos Favoritos</h3>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="card bg-dark text-white">
+                                <img src="https://via.placeholder.com/400x250/dc3545/ffffff?text=Ferrari+F2004"
+                                    class="card-img-top" alt="Ferrari F2004">
+                                <div class="card-body">
+                                    <h6>Ferrari F2004</h6>
+                                    <p class="text-muted mb-0">Fórmula 1</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <div class="card bg-dark text-white">
+                                <img src="https://via.placeholder.com/400x250/dc3545/ffffff?text=McLaren+MP4/4"
+                                    class="card-img-top" alt="McLaren MP4/4">
+                                <div class="card-body">
+                                    <h6>McLaren MP4/4</h6>
+                                    <p class="text-muted mb-0">Fórmula 1</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="/vehiculos" class="btn btn-outline-danger w-100">
+                        <i class="bi bi-plus-circle"></i> Ver más vehículos
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal fade" id="editProfileModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header border-danger">
+                    <h5 class="modal-title text-danger"><i class="bi bi-pencil-fill"></i> Editar Perfil</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label">Nombre de usuario</label>
+                            <input type="text" class="form-control"
+                                value="{{ session.user if session.user else 'Usuario' }}">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control"
+                                value="{{ session.user if session.user else 'usuario@ejemplo.com' }}">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Categoría favorita</label>
+                            <select class="form-control">
+                                <option>Fórmula 1</option>
+                                <option>Rally</option>
+                                <option>Le Mans</option>
+                                <option>NASCAR</option>
+                                <option>MotoGP</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Bio</label>
+                            <textarea class="form-control" rows="3"
+                                placeholder="Cuéntanos sobre tu pasión por el automovilismo..."></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-danger">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" onclick="saveProfile()">Guardar cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function saveProfile() {
+            alert('Perfil actualizado correctamente');
+            location.reload();
+        }
+    </script>
+</body>
+
+</html>
