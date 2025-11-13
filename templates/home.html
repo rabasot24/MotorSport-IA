@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+
+{% block title %}MotorSport - Inicio{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        padding: 120px 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-title {
+        font-size: 4rem;
+        font-weight: 900;
+        background: linear-gradient(135deg, #dc3545, #ffc107);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 20px;
+    }
+
+    .stats-section {
+        background-color: #1a1a1a;
+        padding: 60px 0;
+        border-top: 2px solid var(--primary-color);
+        border-bottom: 2px solid var(--primary-color);
+    }
+
+    .stat-box {
+        text-align: center;
+        padding: 30px;
+    }
+
+    .stat-number {
+        font-size: 3rem;
+        font-weight: bold;
+        color: var(--primary-color);
+    }
+
+    .stat-label {
+        font-size: 1.2rem;
+        color: #888;
+        margin-top: 10px;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 40px;
+        text-align: center;
+        color: var(--primary-color);
+    }
+
+    .vehicle-card {
+        background: linear-gradient(145deg, #1a1a1a, #2d2d2d);
+        border: 2px solid rgba(220, 53, 69, 0.3);
+        border-radius: 15px;
+        overflow: hidden;
+        transition: transform 0.3s, box-shadow 0.3s;
+        margin-bottom: 30px;
+        height: 100%;
+    }
+
+    .vehicle-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 30px rgba(220, 53, 69, 0.5);
+        border-color: var(--primary-color);
+    }
+
+    .vehicle-card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .news-card {
+        background-color: #1a1a1a;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s;
+    }
+
+    .news-card:hover {
+        border-color: var(--primary-color);
+        transform: translateY(-5px);
+    }
+
+    .news-date {
+        color: var(--accent-color);
+        font-size: 0.9rem;
+    }
+
+    .quiz-section {
+        background: linear-gradient(135deg, var(--primary-color), #8b0000);
+        padding: 80px 0;
+        text-align: center;
+        margin: 60px 0;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, var(--primary-color), #c82333);
+        border: none;
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        border-radius: 50px;
+        transition: all 0.3s;
+    }
+
+    .btn-primary-custom:hover {
+        transform: scale(1.05);
+        box-shadow: 0 5px 20px rgba(220, 53, 69, 0.6);
+    }
+
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.5rem !important;
+        }
+
+        .stat-number {
+            font-size: 2rem !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="hero-title">Vive la Pasión Motor</h1>
+                <p class="lead mb-4">Noticias, vehículos legendarios, sonidos únicos y desafíos interactivos. Todo en
+                    una experiencia premium.</p>
+                <a href="{{ url_for('vehiculos') }}" class="btn btn-danger btn-lg me-3">Explorar Vehículos</a>
+                <a href="{{ url_for('quiz') }}" class="btn btn-outline-light btn-lg">Hacer Quiz <i
+                        class="bi bi-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="stat-box">
+                    <div class="stat-number">{{ vehiculos|length }}+</div>
+                    <div class="stat-label">Vehículos</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-box">
+                    <div class="stat-number">{{ noticias|length }}+</div>
+                    <div class="stat-label">Noticias</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-box">
+                    <div class="stat-number">10K+</div>
+                    <div class="stat-label">Usuarios</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Vehículos Destacados -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="section-title">Vehículos Legendarios</h2>
+        <p class="text-center text-muted mb-5">Los iconos del automovilismo</p>
+
+        <div class="row">
+            {% if vehiculos %}
+            {% for vehiculo in vehiculos %}
+            <div class="col-md-3 mb-4">
+                <div class="vehicle-card">
+                    <img src="{{ vehiculo.imagen }}" alt="{{ vehiculo.nombre }}">
+                    <div class="p-3">
+                        <h5>{{ vehiculo.nombre }}</h5>
+                        <p class="text-muted">{{ vehiculo.categoria }}</p>
+                        <a href="{{ url_for('vehiculo_detalle', id=vehiculo.id) }}"
+                            class="btn btn-sm btn-outline-danger w-100">Ver Detalles</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="col-12">
+                <div class="alert alert-warning text-center">
+                    <i class="bi bi-exclamation-triangle"></i> No hay vehículos disponibles. Verifica que el archivo
+                    vehiculos.json existe y tiene datos.
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Quiz Challenge Section -->
+<section class="quiz-section">
+    <div class="container">
+        <h2 class="display-4 fw-bold mb-3">¿Listo para el Desafío?</h2>
+        <p class="lead mb-4">Pon a prueba tus conocimientos en nuestro quiz de circuitos</p>
+        <a href="{{ url_for('quiz') }}" class="btn btn-light btn-lg px-5">Comenzar Quiz <i
+                class="bi bi-play-fill"></i></a>
+    </div>
+</section>
+
+<!-- Últimas Noticias -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="section-title">Últimas Noticias</h2>
+        <p class="text-center text-muted mb-5">Mantente al día con el mundo del motor</p>
+
+        <div class="row">
+            {% if noticias %}
+            {% for noticia in noticias %}
+            <div class="col-md-4 mb-4">
+                <div class="news-card">
+                    <img src="{{ noticia.imagen }}" class="w-100" style="height: 200px; object-fit: cover;"
+                        alt="{{ noticia.titulo }}">
+                    <div class="p-4">
+                        <p class="news-date">{{ noticia.fecha }}</p>
+                        <h5>{{ noticia.titulo }}</h5>
+                        <p class="text-muted">{{ noticia.resumen }}</p>
+                        <a href="{{ url_for('noticia_detalle', id=noticia.id) }}" class="btn btn-sm btn-danger">Leer
+                            más</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="col-12">
+                <div class="alert alert-warning text-center">
+                    <i class="bi bi-exclamation-triangle"></i> No hay noticias disponibles. Verifica que el archivo
+                    noticias.json existe y tiene datos.
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

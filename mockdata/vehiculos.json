@@ -1,0 +1,116 @@
+[
+    {
+        "id": 1,
+        "nombre": "Ferrari F2004",
+        "categoria": "Fórmula 1",
+        "año": 2004,
+        "potencia": "900 CV",
+        "motor": "V10 3.0L",
+        "peso": "605 kg",
+        "velocidad_maxima": "360 km/h",
+        "piloto": "Michael Schumacher",
+        "descripcion": "El monoplaza más dominante de la historia de la Fórmula 1. Ganó 15 de 18 carreras en la temporada 2004.",
+        "imagen": "https://via.placeholder.com/600x400/dc3545/ffffff?text=Ferrari+F2004",
+        "sonido": "/static/sounds/ferrari-f2004.mp3",
+        "logros": [
+            "15 victorias en 18 carreras",
+            "Campeonato de Constructores 2004",
+            "Récord de velocidad en Monza: 360 km/h"
+        ]
+    },
+    {
+        "id": 2,
+        "nombre": "McLaren MP4/4",
+        "categoria": "Fórmula 1",
+        "año": 1988,
+        "potencia": "685 CV",
+        "motor": "V6 Turbo 1.5L Honda",
+        "peso": "540 kg",
+        "velocidad_maxima": "340 km/h",
+        "piloto": "Ayrton Senna",
+        "descripcion": "Considerado el mejor monoplaza de F1 de todos los tiempos. Ganó 15 de 16 carreras en 1988.",
+        "imagen": "https://via.placeholder.com/600x400/dc3545/ffffff?text=McLaren+MP4/4",
+        "sonido": "/static/sounds/mclaren-mp44.mp3",
+        "logros": [
+            "15 victorias en 16 carreras",
+            "Campeonato piloto y constructores",
+            "Dominación absoluta de la era turbo"
+        ]
+    },
+    {
+        "id": 3,
+        "nombre": "Porsche 917",
+        "categoria": "Le Mans",
+        "año": 1970,
+        "potencia": "580 CV",
+        "motor": "Flat-12 4.5L",
+        "peso": "800 kg",
+        "velocidad_maxima": "380 km/h",
+        "piloto": "Hans Herrmann",
+        "descripcion": "Leyenda de las 24 Horas de Le Mans. El coche que dio a Porsche su primera victoria en la mítica carrera.",
+        "imagen": "https://via.placeholder.com/600x400/dc3545/ffffff?text=Porsche+917",
+        "sonido": "/static/sounds/porsche-917.mp3",
+        "logros": [
+            "Victoria en Le Mans 1970 y 1971",
+            "Primer título mundial para Porsche",
+            "Velocidad máxima récord en Mulsanne"
+        ]
+    },
+    {
+        "id": 4,
+        "nombre": "Audi Quattro S1",
+        "categoria": "Rally",
+        "año": 1985,
+        "potencia": "550 CV",
+        "motor": "I5 Turbo 2.1L",
+        "peso": "1090 kg",
+        "velocidad_maxima": "250 km/h",
+        "piloto": "Walter Röhrl",
+        "descripcion": "El monstruo del Grupo B. Revolucionó el mundo del rally con su tracción integral Quattro.",
+        "imagen": "https://via.placeholder.com/600x400/dc3545/ffffff?text=Audi+Quattro+S1",
+        "sonido": "/static/sounds/audi-quattro.mp3",
+        "logros": [
+            "Campeonato Mundial de Rally 1982",
+            "Pionero del sistema Quattro",
+            "Dominio en superficies mixtas"
+        ]
+    },
+    {
+        "id": 5,
+        "nombre": "Lancia Delta S4",
+        "categoria": "Rally",
+        "año": 1985,
+        "potencia": "480 CV",
+        "motor": "I4 Turbo+Compresor 1.8L",
+        "peso": "890 kg",
+        "velocidad_maxima": "240 km/h",
+        "piloto": "Henri Toivonen",
+        "descripcion": "El icono del Grupo B con su innovador motor bicompresor. Potencia extrema en un paquete compacto.",
+        "imagen": "https://via.placeholder.com/600x400/dc3545/ffffff?text=Lancia+Delta+S4",
+        "sonido": "/static/sounds/lancia-delta.mp3",
+        "logros": [
+            "Victoria en Rally de Monte Carlo 1986",
+            "Tecnología revolucionaria turbo+compresor",
+            "Leyenda del Grupo B"
+        ]
+    },
+    {
+        "id": 6,
+        "nombre": "Ford GT40",
+        "categoria": "Le Mans",
+        "año": 1966,
+        "potencia": "485 CV",
+        "motor": "V8 7.0L",
+        "peso": "1020 kg",
+        "velocidad_maxima": "340 km/h",
+        "piloto": "Ken Miles",
+        "descripcion": "El conquistador de Le Mans. Creado para vencer a Ferrari, logró 4 victorias consecutivas (1966-1969).",
+        "imagen": "https://via.placeholder.com/600x400/dc3545/ffffff?text=Ford+GT40",
+        "sonido": "/static/sounds/ford-gt40.mp3",
+        "logros": [
+            "4 victorias consecutivas en Le Mans",
+            "Venganza épica contra Ferrari",
+            "Icono del automovilismo americano"
+        ]
+    }
+]
