@@ -1,29 +1,48 @@
-#Portal Web MotorSport
-El portal MotorSport es una plataforma web diseñada para que los aficionados puedan disfrutar, informarse y participar activamente en la comunidad del automovilismo.
+MotorSport Portal Web
+MotorSport es una plataforma interactiva especializada en automovilismo, diseñada para ofrecer a los aficionados una experiencia completa centrada en la información, el entretenimiento y la participación comunitaria.
 
-Funcionalidades para el usuario
-Explorar noticias actualizadas: Accede a una sección de noticias donde podrás mantenerte al día con los acontecimientos más importantes del mundo del motor y novedades del sector.​
+¿Qué puedes hacer en la web?
+Consultar noticias: Accede a las últimas novedades, competiciones y avances tecnológicos del mundo del motor.​
 
-Consultar fichas de vehículos legendarios: Descubre información técnica, imágenes y detalles de vehículos emblemáticos gracias a una sección dedicada, con datos obtenidos a través de una API especializada.​
+Explorar fichas de vehículos legendarios: Encuentra información técnica y visual de coches de Fórmula 1, prototipos de resistencia, autos de rally y vehículos emblemáticos de otras disciplinas. Cada ficha incluye especificaciones, curiosidades y fotografías.​
 
-Escuchar sonidos únicos de motores: Sumérgete en la experiencia sonora interactiva con una galería de audios de motores reales, diseñada para los amantes del automovilismo.​
+Escuchar sonidos de motores: Disfruta de una galería interactiva con grabaciones auténticas de motores icónicos, pensada para los entusiastas del sonido automovilístico.​
 
-Gestionar tu perfil de usuario: Regístrate y personaliza un perfil propio. Los usuarios registrados pueden guardar sus preferencias y acceder a funcionalidades exclusivas.​
+Gestionar tu perfil: Regístrate para crear y personalizar tu perfil, guardar modelos favoritos y acceder a funcionalidades exclusivas para usuarios registrados.​
 
-Participar en un quiz interactivo: Pon a prueba tus conocimientos sobre circuitos, coches y grandes momentos del automovilismo mediante un cuestionario lúdico y educativo.​
+Participar en quiz y retos: Pon a prueba tus conocimientos sobre vehículos, circuitos y momentos históricos del motorsport con cuestionarios y juegos educativos.​
 
-Acceder a un panel de administración (usuarios autorizados): Los usuarios con permisos pueden gestionar contenidos del portal, como editar noticias y fichas de vehículos, fomentando una web colaborativa y actualizada.​
+Administración de contenidos: Los usuarios autorizados pueden acceder a un panel para gestionar, editar y publicar noticias o fichas de vehículos, asegurando una web colaborativa y actualizada.​
 
-Navegación sencilla e intuitiva: Explora fácilmente entre secciones como inicio, noticias, vehículos y sonidos, gracias a una estructura visual moderna y optimizada para distintos dispositivos.
-En el portal MotorSport, el usuario podrá encontrar fichas de vehículos emblemáticos de la historia del automovilismo, presentados en una sección especializada.​
+Tipos de vehículos presentes en MotorSport
+Monoplazas de Fórmula 1: Modelos históricos y modernos de principales escuderías.
 
-Tipos de vehículos que se muestran
-Coches de Fórmula 1: Podrás explorar información técnica y fotografías de monoplazas históricos y actuales, como el Ferrari F2004, McLaren MP4/4 y modelos icónicos de equipos legendarios.​
+Prototipos de resistencia: Autos diseñados para pruebas de larga duración como Le Mans.
 
-Prototipos de resistencia: Descubre autos como el Porsche 917, famosos en carreras como Le Mans y otras competiciones de larga duración.​
+Coches de rally: Vehículos míticos del Campeonato Mundial de Rally.
 
-Autos de rally: Accede a detalles de coches míticos del rally, como el Audi Quattro y otros vehículos que marcaron época en el campeonato mundial.​
+Superdeportivos y clásicos: Vehículos que marcaron tendencia fuera de las pistas.​
 
-Otras categorías míticas: La web irá ampliando su catálogo para incluir vehículos de distintas disciplinas, superdeportivos y autos clásicos relevantes para la cultura del motorsport.​
+Cada modelo incluye detalles técnicos, imágenes y curiosidades para que el usuario descubra su relevancia y legado en la historia del automovilismo.​
 
-Cada ficha de vehículo incluye datos técnicos, imágenes y curiosidades, permitiendo al usuario conocer a fondo los modelos más representativos, y apreciar el legado y la innovación que aportaron a la historia de la competición.
+Tecnologías empleadas
+Frontend: HTML, CSS y JavaScript con frameworks modernos (React, Vue.js)
+
+Backend: Node.js o Django
+
+Base de datos: MySQL o PostgreSQL
+
+Control de versiones: Git​
+
+¿Cómo contribuir?
+Haz fork del repositorio y clona el proyecto.
+
+Crea una rama para tu propuesta.
+
+Realiza cambios y documentación descriptiva.
+
+Envía tu pull request para revisión.
+
+Consulta la guía de contribución para más información.
+
+MotorSport Portal Web es el punto de encuentro digital para aprender, disfrutar y compartir la pasión por el automovilismo de forma participativa y segura.​
