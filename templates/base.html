@@ -67,11 +67,39 @@
 </head>
 
 <body>
+    <div id="loader-bg"
+        style="display:none;position:fixed;left:0;top:0;width:100vw;height:100vh;background:rgba(20,20,20,0.94);z-index:1999;">
+        <div style="height:80vh;display:flex;flex-direction:column;justify-content:center;align-items:center;">
+            <!-- SVG Fórmula 1 y humo, minimal y compatible -->
+            <svg width="220" height="90" viewBox="0 0 220 90">
+                <!-- Coche F1 base -->
+                <g>
+                    <rect x="80" y="40" rx="8" width="65" height="21" fill="#dc3545" />
+                    <ellipse cx="85" cy="70" rx="9" ry="9" fill="#444" />
+                    <ellipse cx="135" cy="70" rx="9" ry="9" fill="#444" />
+                    <rect x="120" y="28" width="12" height="14" rx="3" fill="#888" />
+                    <rect x="117" y="35" width="15" height="4" rx="2" fill="#cfcfcf" />
+                    <rect x="70" y="55" width="30" height="4" rx="2" fill="#aaa" />
+                    <rect x="125" y="55" width="30" height="4" rx="2" fill="#aaa" />
+                </g>
+                <!-- Humo animado -->
+                <g id="smoke">
+                    <ellipse id="smoke1" cx="60" cy="68" rx="8" ry="5" fill="#fff" opacity="0.90"></ellipse>
+                    <ellipse id="smoke2" cx="50" cy="72" rx="7" ry="4" fill="#fff" opacity="0.55"></ellipse>
+                    <ellipse id="smoke3" cx="42" cy="77" rx="4" ry="3" fill="#fff" opacity="0.30"></ellipse>
+                </g>
+            </svg>
+            <div style="margin-top:18px; color:#fff;font-weight:bold;font-size:1.3rem;">Cargando</div>
+        </div>
+    </div>
+
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container">
             <a class="navbar-brand" href="{{ url_for('home') }}">
-                <i class="bi bi-flag-fill"></i> MotorSport
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="MotorSport Logo"
+                    style="height:40px; margin-right:10px;">
+                <span>MotorSport</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -167,7 +195,32 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Bloque para JavaScript adicional de páginas hijas -->
-    {% block extra_js %}{% endblock %}
+    {% block extra_js %}
+    <script>
+        function mostrarLoader() {
+            document.getElementById('loader-bg').style.display = "block";
+            // Animación humo
+            let t = 0;
+            if (!window.humoAnim) {
+                window.humoAnim = setInterval(() => {
+                    t += 0.05;
+                    document.getElementById("smoke1").setAttribute("cx", 60 + Math.sin(t) * 3);
+                    document.getElementById("smoke2").setAttribute("cx", 50 + Math.sin(t + 1) * 4);
+                    document.getElementById("smoke3").setAttribute("cx", 42 + Math.sin(t + 2) * 5);
+                    document.getElementById("smoke1").setAttribute("opacity", (0.9 + Math.sin(t) * 0.1).toFixed(2));
+                }, 40);
+            }
+        }
+        function ocultarLoader() {
+            document.getElementById('loader-bg').style.display = "none";
+            if (window.humoAnim) clearInterval(window.humoAnim), window.humoAnim = null;
+        }
+
+        // Opcional: mostrar loader al navegar AJAX
+        window.addEventListener('beforeunload', mostrarLoader);
+    </script>
+    {% endblock %}
 </body>
+
 
 </html>

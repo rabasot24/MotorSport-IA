@@ -1,12 +1,61 @@
 from flask import Flask, render_template, jsonify, request, redirect, url_for, session
 import json
 import os
+import requests
 
 app = Flask(__name__)
 app.secret_key = "motorsport_secret_key_2025"
 
+# Vehículos destacados/locales y función para pedir a NHTSA API
+DESTACADOS = [
+    {"marca": "Ferrari", "modelo": "F2004", "categoria": "Fórmula 1", "epoca": "2000s"},
+    {"marca": "McLaren", "modelo": "MP4/4", "categoria": "Fórmula 1", "epoca": "1980s"},
+    {"marca": "Audi", "modelo": "Quattro S1", "categoria": "Rally", "epoca": "1980s"},
+    {"marca": "Ford", "modelo": "GT40", "categoria": "Le Mans", "epoca": "1960s"},
+    {"marca": "Porsche", "modelo": "917", "categoria": "Le Mans", "epoca": "1970s"},
+    {"marca": "Toyota", "modelo": "Supra", "categoria": "GT", "epoca": "1990s"},
+]
 
-# Cargar datos mock
+
+def get_nhtsa_info(make, model_name):
+    url = f"https://vpic.nhtsa.dot.gov/api/vehicles/GetModelsForMake/{make}?format=json"
+    try:
+        all_models = requests.get(url).json().get("Results", [])
+        filtered = [
+            m
+            for m in all_models
+            if model_name.lower() in m.get("Model_Name", "").lower()
+        ]
+        return filtered
+    except Exception as e:
+        print(f"⚠️  Error consultando NHTSA: {e}")
+        return []
+
+
+@app.route("/api/vehiculos/agrupados")
+def api_vehiculos_agrupados():
+    agrupados = {}
+    for v in DESTACADOS:
+        key = (v["categoria"], v["epoca"])
+        if key not in agrupados:
+            agrupados[key] = []
+        info_api = get_nhtsa_info(v["marca"], v["modelo"])
+        agrupados[key].append(
+            {
+                "marca": v["marca"],
+                "modelo": v["modelo"],
+                "categoria": v["categoria"],
+                "epoca": v["epoca"],
+                "info_api": info_api,
+            }
+        )
+    res = []
+    for (cat, epoca), vehs in agrupados.items():
+        res.append({"categoria": cat, "epoca": epoca, "vehiculos": vehs})
+    return jsonify(res)
+
+
+# MOCK DATA/LOCAL FILES:
 def cargar_noticias():
     try:
         with open("mockdata/noticias.json", "r", encoding="utf-8") as f:
@@ -31,18 +80,16 @@ def cargar_vehiculos():
         return []
 
 
-# Rutas principales
+# Rutas principales frontend
 @app.route("/")
 def home():
-    print("🏠 Cargando página de inicio...")
-    noticias = cargar_noticias()[:3]  # Últimas 3 noticias
-    vehiculos = cargar_vehiculos()[:4]  # 4 vehículos destacados
+    noticias = cargar_noticias()[:3]
+    vehiculos = cargar_vehiculos()[:4]
     return render_template("home.html", noticias=noticias, vehiculos=vehiculos)
 
 
 @app.route("/noticias")
 def noticias():
-    print("📰 Cargando noticias...")
     todas_noticias = cargar_noticias()
     return render_template("noticias.html", noticias=todas_noticias)
 
@@ -58,7 +105,6 @@ def noticia_detalle(id):
 
 @app.route("/vehiculos")
 def vehiculos():
-    print("🏎️  Cargando vehículos...")
     todos_vehiculos = cargar_vehiculos()
     return render_template("vehiculos.html", vehiculos=todos_vehiculos)
 
@@ -74,7 +120,6 @@ def vehiculo_detalle(id):
 
 @app.route("/quiz")
 def quiz():
-    print("🎯 Cargando quiz...")
     return render_template("quiz.html")
 
 
@@ -97,7 +142,7 @@ def login():
     if request.method == "POST":
         email = request.form.get("email")
         password = request.form.get("password")
-        # Simulación de login exitoso
+        # Modo demo (acepta cualquier login)
         session["user"] = email
         session["role"] = "user"
         return redirect(url_for("perfil"))
@@ -108,11 +153,8 @@ def login():
 def register():
     username = request.form.get("username")
     email = request.form.get("email")
-
-    # Modo demo: registra automáticamente
     session["user"] = email
     session["role"] = "user"
-
     return redirect(url_for("perfil"))
 
 
@@ -122,21 +164,18 @@ def logout():
     return redirect(url_for("home"))
 
 
-# API endpoints para AJAX
+# API endpoints mockdata (por si sigues usándolos)
 @app.route("/api/vehiculos")
 def api_vehiculos():
     vehiculos_list = cargar_vehiculos()
     categoria = request.args.get("categoria")
     busqueda = request.args.get("q")
-
     if categoria and categoria != "Todas las categorías":
         vehiculos_list = [v for v in vehiculos_list if v.get("categoria") == categoria]
-
     if busqueda:
         vehiculos_list = [
             v for v in vehiculos_list if busqueda.lower() in v["nombre"].lower()
         ]
-
     return jsonify(vehiculos_list)
 
 
@@ -146,7 +185,13 @@ def api_noticias():
     return jsonify(noticias)
 
 
-# Manejo de errores
+@app.route("/api/vehiculos/detalles")
+def api_vehiculos_detalles():
+    vehiculos_list = cargar_vehiculos()
+    return jsonify(vehiculos_list)
+
+
+# ERRORES
 @app.errorhandler(404)
 def page_not_found(e):
     return (
@@ -168,23 +213,17 @@ if __name__ == "__main__":
     print("📍 URL alternativa: http://localhost:5000")
     print("⏹️  Para detener: Presiona Ctrl+C")
     print("=" * 60)
-
-    # Verificar archivos
     if os.path.exists("mockdata/noticias.json"):
         print("✅ noticias.json encontrado")
     else:
         print("❌ noticias.json NO encontrado")
-
     if os.path.exists("mockdata/vehiculos.json"):
         print("✅ vehiculos.json encontrado")
     else:
         print("❌ vehiculos.json NO encontrado")
-
     if os.path.exists("templates/home.html"):
         print("✅ home.html encontrado")
     else:
         print("❌ home.html NO encontrado")
-
     print("=" * 60)
-
     app.run(debug=True, host="127.0.0.1", port=5000)

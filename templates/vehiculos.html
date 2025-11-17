@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Vehículos Leyenda por Categoría y Época - MotorSport{% endblock %}
+
+{% block extra_css %}
+<style>
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 40px;
+        text-align: center;
+        color: #dc3545;
+    }
+
+    .categoria-title {
+        margin-bottom: 30px;
+        margin-top: 50px;
+        font-size: 2rem;
+        color: #ffc107;
+        border-left: 8px solid #dc3545;
+        padding-left: 16px;
+        font-weight: bold;
+    }
+
+    .spec-card {
+        background: linear-gradient(145deg, #1a1a1a, #2d2d2d);
+        border-radius: 15px;
+        border: 2px solid rgba(220, 53, 69, 0.3);
+        margin-bottom: 30px;
+        transition: box-shadow 0.3s;
+    }
+
+    .spec-card:hover {
+        box-shadow: 0 10px 30px rgba(220, 53, 69, 0.3);
+        border-color: #dc3545;
+    }
+
+    .card-header {
+        font-size: 1.15rem;
+        background: transparent;
+        border-bottom: 1px solid #dc3545;
+    }
+
+    .card-body {
+        font-size: 0.98rem
+    }
+
+    @media (max-width: 768px) {
+        .spec-card {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="section-title">Vehículos Leyenda por Categoría y Época</h2>
+    <div id="vehiculosPorCategoria"></div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    window.onload = function () {
+        mostrarLoader(); // Mostrar loader al entrar a la página
+        fetch("/api/vehiculos/agrupados")
+            .then(res => res.json())
+            .then(data => {
+                const container = document.getElementById('vehiculosPorCategoria');
+                let html = '';
+                if (!data || data.length === 0) {
+                    html = `<div class="alert alert-warning">No hay vehículos disponibles.</div>`;
+                } else {
+                    data.forEach(grupo => {
+                        html += `<div class="categoria-title">${grupo.categoria} · <span class="text-white">${grupo.epoca}</span></div>`;
+                        html += `<div class="row">`;
+                        grupo.vehiculos.forEach(v => {
+                            html += `<div class="col-md-4 mb-4">
+                                <div class="spec-card card h-100">
+                                    <div class="card-header text-danger">${v.modelo} <span class="badge bg-danger">${v.marca}</span></div>
+                                    <div class="card-body">`;
+                            if (v.info_api.length > 0) {
+                                v.info_api.forEach(api => {
+                                    html += `<div class="mb-2"><b>Modelo oficial:</b> ${api.Model_Name} <span class="badge bg-secondary">NHTSA</span></div>`;
+                                    html += `<div><b>ID Modelo:</b> ${api.Model_ID}</div>`;
+                                });
+                            } else {
+                                html += `<div class="mb-2 text-warning">Sin datos extras en NHTSA</div>`;
+                            }
+                            html += `</div></div></div>`;
+                        });
+                        html += `</div>`;
+                    });
+                }
+                container.innerHTML = html;
+                ocultarLoader(); // Ocultar loader al terminar todo el render
+            });
+    };
+</script>
+{% endblock %}
