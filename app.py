@@ -4,7 +4,8 @@ import os
 import requests
 
 app = Flask(__name__)
-app.secret_key = "motorsport_secret_key_2025"
+app.secret_key = os.environ.get("SECRET_KEY", "motorsport_secret_key_2025_fallback")
+DEBUG_MODE = os.environ.get("FLASK_DEBUG", "False").lower() == "true"
 
 # Vehículos destacados/locales y función para pedir a NHTSA API
 DESTACADOS = [
@@ -20,15 +21,20 @@ DESTACADOS = [
 def get_nhtsa_info(make, model_name):
     url = f"https://vpic.nhtsa.dot.gov/api/vehicles/GetModelsForMake/{make}?format=json"
     try:
-        all_models = requests.get(url).json().get("Results", [])
+        response = requests.get(url, timeout=5)
+        response.raise_for_status()
+        all_models = response.json().get("Results", [])
         filtered = [
             m
             for m in all_models
             if model_name.lower() in m.get("Model_Name", "").lower()
         ]
         return filtered
+    except requests.RequestException as e:
+        print(f"⚠️  Error de red consultando NHTSA: {e}")
+        return []
     except Exception as e:
-        print(f"⚠️  Error consultando NHTSA: {e}")
+        print(f"⚠️  Error inesperado consultando NHTSA: {e}")
         return []
 
 
@@ -56,28 +62,26 @@ def api_vehiculos_agrupados():
 
 
 # MOCK DATA/LOCAL FILES:
-def cargar_noticias():
+def cargar_json(filename):
+    """Función auxiliar para cargar datos JSON de mockdata."""
+    filepath = os.path.join("mockdata", filename)
     try:
-        with open("mockdata/noticias.json", "r", encoding="utf-8") as f:
+        with open(filepath, "r", encoding="utf-8") as f:
             return json.load(f)
     except FileNotFoundError:
-        print("⚠️  Advertencia: No se encontró noticias.json")
+        print(f"⚠️  Advertencia: No se encontró {filename}")
         return []
     except json.JSONDecodeError as e:
-        print(f"⚠️  Error al leer noticias.json: {e}")
+        print(f"⚠️  Error al leer {filename}: {e}")
         return []
+
+
+def cargar_noticias():
+    return cargar_json("noticias.json")
 
 
 def cargar_vehiculos():
-    try:
-        with open("mockdata/vehiculos.json", "r", encoding="utf-8") as f:
-            return json.load(f)
-    except FileNotFoundError:
-        print("⚠️  Advertencia: No se encontró vehiculos.json")
-        return []
-    except json.JSONDecodeError as e:
-        print(f"⚠️  Error al leer vehiculos.json: {e}")
-        return []
+    return cargar_json("vehiculos.json")
 
 
 # Rutas principales frontend
@@ -226,4 +230,4 @@ if __name__ == "__main__":
     else:
         print("❌ home.html NO encontrado")
     print("=" * 60)
-    app.run(debug=True, host="127.0.0.1", port=5000)
+    app.run(debug=DEBUG_MODE, host="127.0.0.1", port=5000)
