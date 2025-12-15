@@ -17,8 +17,15 @@ DESTACADOS = [
     {"marca": "Toyota", "modelo": "Supra", "categoria": "GT", "epoca": "1990s"},
 ]
 
+NHTSA_CACHE = {}
+
 
 def get_nhtsa_info(make, model_name):
+    """Consulta la API vPIC de NHTSA y usa caché en memoria."""
+    cache_key = f"{make.lower()}_{model_name.lower()}"
+    if cache_key in NHTSA_CACHE:
+        return NHTSA_CACHE[cache_key]
+
     url = f"https://vpic.nhtsa.dot.gov/api/vehicles/GetModelsForMake/{make}?format=json"
     try:
         response = requests.get(url, timeout=5)
@@ -29,6 +36,7 @@ def get_nhtsa_info(make, model_name):
             for m in all_models
             if model_name.lower() in m.get("Model_Name", "").lower()
         ]
+        NHTSA_CACHE[cache_key] = filtered
         return filtered
     except requests.RequestException as e:
         print(f"⚠️  Error de red consultando NHTSA: {e}")
@@ -36,6 +44,67 @@ def get_nhtsa_info(make, model_name):
     except Exception as e:
         print(f"⚠️  Error inesperado consultando NHTSA: {e}")
         return []
+
+
+# -------------------------
+# QUIZ: circuitos por sonido
+# -------------------------
+
+QUIZ_PREGUNTAS = [
+    {
+        "id": 1,
+        "audio": "/static/sounds/quiz/spa.mp3",
+        "opciones": ["Monza", "Spa-Francorchamps", "Silverstone", "Suzuka"],
+        "correcta": "Spa-Francorchamps",
+    },
+    {
+        "id": 2,
+        "audio": "/static/sounds/quiz/monza.mp3",
+        "opciones": ["Monza", "Mónaco", "Interlagos", "Red Bull Ring"],
+        "correcta": "Monza",
+    },
+    # Añade más preguntas con sus audios
+]
+
+QUIZ_TIEMPO_MAX = 20  # segundos por pregunta
+
+
+@app.route("/quiz")
+def quiz():
+    # Por ahora mostramos siempre la primera pregunta
+    pregunta = QUIZ_PREGUNTAS[0]
+    return render_template("quiz.html", pregunta=pregunta, tiempo_max=QUIZ_TIEMPO_MAX)
+
+
+@app.route("/quiz/submit", methods=["POST"])
+def quiz_submit():
+    pregunta_id = int(request.form.get("pregunta_id", 0))
+    respuesta = request.form.get("respuesta")
+    tiempo_restante = int(request.form.get("tiempo_restante", 0))
+
+    pregunta = next((p for p in QUIZ_PREGUNTAS if p["id"] == pregunta_id), None)
+    if not pregunta:
+        return redirect(url_for("quiz"))
+
+    acierto = respuesta == pregunta["correcta"]
+
+    # Puntuación: si acierta, proporcional al tiempo restante
+    puntos = 0
+    if acierto and tiempo_restante > 0:
+        puntos = int((tiempo_restante / QUIZ_TIEMPO_MAX) * 10)  # 0-10
+
+    # Guardar en sesión para usar en perfil
+    session["ultimo_quiz_aciertos"] = 1 if acierto else 0
+    session["ultimo_quiz_total"] = 1
+    session["ultimo_quiz_puntuacion"] = puntos
+
+    return render_template(
+        "quiz_resultado.html",
+        acierto=acierto,
+        respuesta_correcta=pregunta["correcta"],
+        puntos=puntos,
+        tiempo_restante=tiempo_restante,
+    )
 
 
 @app.route("/api/vehiculos/agrupados")
@@ -122,11 +191,6 @@ def vehiculo_detalle(id):
     return redirect(url_for("vehiculos"))
 
 
-@app.route("/quiz")
-def quiz():
-    return render_template("quiz.html")
-
-
 @app.route("/perfil")
 def perfil():
     if "user" not in session:
@@ -168,7 +232,7 @@ def logout():
     return redirect(url_for("home"))
 
 
-# API endpoints mockdata (por si sigues usándolos)
+# API endpoints mockdata
 @app.route("/api/vehiculos")
 def api_vehiculos():
     vehiculos_list = cargar_vehiculos()

@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}Quiz de Circuitos - MotorSport{% endblock %}
+
+{% block extra_css %}
+<style>
+    .quiz-wrapper {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .timer-circle {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        border: 4px solid #dc3545;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    .option-btn {
+        margin-bottom: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="quiz-wrapper">
+        <h1 class="text-danger mb-3">
+            <i class="bi bi-flag-fill"></i> Quiz: Adivina el circuito
+        </h1>
+        <p class="text-muted mb-4">
+            Escucha el sonido del motor rodando y elige en qué circuito está corriendo.
+            Cuanto menos tiempo tardes, más puntos obtendrás.
+        </p>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <button id="btnPlay" class="btn btn-danger me-2">
+                    <i class="bi bi-play-fill"></i> Reproducir sonido
+                </button>
+                <audio id="audioCircuito" src="{{ pregunta.audio }}"></audio>
+            </div>
+            <div class="timer-circle" id="timerCircle">
+                <span id="timerValue">{{ tiempo_max }}</span>
+            </div>
+        </div>
+
+        <form id="quizForm" method="POST" action="{{ url_for('quiz_submit') }}">
+            <input type="hidden" name="pregunta_id" value="{{ pregunta.id }}">
+            <input type="hidden" name="tiempo_restante" id="tiempoRestante" value="{{ tiempo_max }}">
+            <input type="hidden" name="respuesta" id="respuestaInput">
+
+            <div class="mb-3">
+                <h5 class="text-white">¿En qué circuito está rodando este coche?</h5>
+            </div>
+
+            {% for opcion in pregunta.opciones %}
+            <button type="button" class="btn btn-outline-light w-100 option-btn"
+                onclick="seleccionarRespuesta('{{ opcion }}')">
+                {{ opcion }}
+            </button>
+            {% endfor %}
+
+            <button type="submit" class="btn btn-danger w-100 mt-3" disabled id="btnEnviar">
+                Enviar respuesta
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const tiempoMax = "{{ tiempo_max }}";
+    let tiempoActual = tiempoMax;
+    let intervalId = null;
+    const timerValue = document.getElementById('timerValue');
+    const tiempoRestanteInput = document.getElementById('tiempoRestante');
+    const audio = document.getElementById('audioCircuito');
+    const btnPlay = document.getElementById('btnPlay');
+    const btnEnviar = document.getElementById('btnEnviar');
+    const respuestaInput = document.getElementById('respuestaInput');
+
+    function startTimer() {
+        if (intervalId) return;
+        intervalId = setInterval(() => {
+            tiempoActual--;
+            if (tiempoActual < 0) {
+                tiempoActual = 0;
+                clearInterval(intervalId);
+                intervalId = null;
+                btnEnviar.disabled = true; // sin tiempo, sin enviar
+            }
+            timerValue.textContent = tiempoActual;
+            tiempoRestanteInput.value = tiempoActual;
+        }, 1000);
+    }
+
+    btnPlay.addEventListener('click', () => {
+        audio.currentTime = 0;
+        audio.play();
+        startTimer();
+    });
+
+    function seleccionarRespuesta(opcion) {
+        respuestaInput.value = opcion;
+        btnEnviar.disabled = false;
+    }
+
+    // Evitar enviar sin respuesta
+    document.getElementById('quizForm').addEventListener('submit', (e) => {
+        if (!respuestaInput.value) {
+            e.preventDefault();
+            alert('Selecciona una respuesta antes de enviar.');
+        }
+    });
+</script>
+{% endblock %}
