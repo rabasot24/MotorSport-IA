@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Bienvenido al Quiz{% endblock %}
+
+{% block content %}
+<div class="container py-5 text-center">
+    <div class="card bg-dark text-white border-danger mx-auto p-4"
+        style="max-width: 600px; box-shadow: 0 0 20px rgba(220, 53, 69, 0.4);">
+        <div class="card-body">
+            <h1 class="display-4 text-danger mb-4"><i class="bi bi-flag-fill"></i> Gran Premio Quiz</h1>
+
+            <p class="lead mb-4">¿Eres capaz de reconocer un circuito de F1 solo por el sonido de su motor?</p>
+
+            <ul class="list-unstyled text-start mx-auto mb-5" style="max-width: 400px;">
+                <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> 10 Rondas rápidas.</li>
+                <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Escucha el audio.</li>
+                <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Adivina el trazado.</li>
+                <li class="mb-2"><i class="bi bi-trophy text-warning me-2"></i> Consigue la máxima puntuación.</li>
+            </ul>
+
+            <a href="{{ url_for('quiz_start') }}" class="btn btn-danger btn-lg px-5 py-3 fw-bold rounded-pill">
+                <i class="bi bi-play-fill"></i> COMENZAR CARRERA
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

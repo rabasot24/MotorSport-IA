@@ -2,126 +2,29 @@
 
 {% block title %}Noticias - MotorSport{% endblock %}
 
-{% block extra_css %}
-<style>
-    :root {
-        --primary-color: #dc3545;
-        --accent-color: #ffc107;
-    }
-
-    .page-header {
-        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-        padding: 60px 0;
-        margin-bottom: 40px;
-        border-bottom: 2px solid var(--primary-color);
-    }
-
-    .filter-section {
-        background-color: #1a1a1a;
-        padding: 30px;
-        border-radius: 10px;
-        margin-bottom: 40px;
-        border: 1px solid rgba(220, 53, 69, 0.3);
-    }
-
-    .news-card {
-        background-color: #1a1a1a;
-        border-radius: 15px;
-        overflow: hidden;
-        margin-bottom: 30px;
-        border: 2px solid rgba(255, 255, 255, 0.1);
-        transition: all 0.3s;
-        height: 100%;
-    }
-
-    .news-card:hover {
-        border-color: var(--primary-color);
-        transform: translateY(-5px);
-        box-shadow: 0 10px 30px rgba(220, 53, 69, 0.3);
-    }
-
-    .news-card img {
-        width: 100%;
-        height: 250px;
-        object-fit: cover;
-    }
-
-    .news-badge {
-        background-color: var(--primary-color);
-        color: white;
-        padding: 5px 15px;
-        border-radius: 20px;
-        font-size: 0.85rem;
-        display: inline-block;
-        margin-bottom: 10px;
-    }
-
-    .news-date {
-        color: var(--accent-color);
-        font-size: 0.9rem;
-        margin-bottom: 10px;
-    }
-
-    .news-author {
-        color: #888;
-        font-size: 0.9rem;
-        margin-top: 15px;
-    }
-</style>
-{% endblock %}
-
 {% block content %}
-<!-- Page Header -->
-<section class="page-header">
-    <div class="container">
-        <h1 class="display-4 fw-bold text-danger">📰 Noticias del Automovilismo</h1>
-        <p class="lead text-muted">Las últimas novedades del mundo del motor</p>
-    </div>
-</section>
+<div class="container py-5">
+    <h2 class="text-danger mb-5 text-center">Actualidad del Motor</h2>
 
-<!-- Filter Section -->
-<div class="container">
-    <div class="filter-section">
-        <div class="row align-items-center">
-            <div class="col-md-4">
-                <select class="form-select bg-dark text-white border-danger" id="categoryFilter"
-                    onchange="filterNews()">
-                    <option value="all" selected>Todas las categorías</option>
-                    <option value="Fórmula 1">Fórmula 1</option>
-                    <option value="Rally">Rally</option>
-                    <option value="Le Mans">Le Mans</option>
-                    <option value="NASCAR">NASCAR</option>
-                    <option value="MotoGP">MotoGP</option>
-                </select>
-            </div>
-            <div class="col-md-6">
-                <input type="text" class="form-control bg-dark text-white border-danger" placeholder="Buscar noticia..."
-                    id="searchInput" oninput="filterNews()">
-            </div>
-            <div class="col-md-2">
-                <button class="btn btn-danger w-100" onclick="resetFilters()">
-                    <i class="bi bi-arrow-clockwise"></i> Limpiar
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- News Grid -->
-    <div class="row" id="newsGrid">
+    <div class="row">
         {% if noticias %}
         {% for noticia in noticias %}
-        <div class="col-md-4 mb-4 news-item" data-categoria="{{ noticia.categoria }}"
-            data-titulo="{{ noticia.titulo|lower }}">
-            <div class="news-card">
-                <img src="{{ noticia.imagen }}" alt="{{ noticia.titulo }}">
-                <div class="p-4">
-                    <span class="news-badge">{{ noticia.categoria }}</span>
-                    <p class="news-date"><i class="bi bi-calendar-event"></i> {{ noticia.fecha }}</p>
-                    <h4>{{ noticia.titulo }}</h4>
-                    <p class="text-muted">{{ noticia.resumen }}</p>
-                    <p class="news-author"><i class="bi bi-person-circle"></i> Por {{ noticia.autor }}</p>
-                    <a href="/noticias/{{ noticia.id }}" class="btn btn-danger w-100">
-                        Leer noticia completa <i class="bi bi-arrow-right"></i>
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark text-white border-secondary h-100"
+                style="transition: transform 0.3s; border: 1px solid rgba(255,255,255,0.1);">
+                <img src="{{ noticia.image }}" class="card-img-top" alt="{{ noticia.title }}"
+                    style="height: 200px; object-fit: cover;">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex justify-content-between mb-2">
+                        <small class="text-warning"><i class="bi bi-calendar"></i> {{ noticia.date.strftime('%Y-%m-%d')
+                            if noticia.date else 'Hoy' }}</small>
+                        <small class="text-muted">Redacción</small>
+                    </div>
+                    <h5 class="card-title text-danger">{{ noticia.title }}</h5>
+                    <p class="card-text text-muted flex-grow-1">{{ noticia.content[:120] }}...</p>
+
+                    <a href="{{ url_for('noticia_detalle', id=noticia.id) }}" class="btn btn-outline-danger mt-3">
+                        Leer completa <i class="bi bi-arrow-right"></i>
                     </a>
                 </div>
             </div>
@@ -130,45 +33,10 @@
         {% else %}
         <div class="col-12">
             <div class="alert alert-warning text-center">
-                <i class="bi bi-exclamation-triangle"></i> No hay noticias disponibles en este momento.
+                <i class="bi bi-exclamation-triangle"></i> No hay noticias en la base de datos.
             </div>
         </div>
         {% endif %}
     </div>
-
-    <!-- No results message -->
-    <div id="noResults" class="alert alert-info text-center" style="display: none;">
-        <i class="bi bi-search"></i> No se encontraron noticias con esos criterios.
-    </div>
 </div>
-{% endblock %}
-
-{% block extra_js %}
-<script>
-    function filterNews() {
-        const category = document.getElementById('categoryFilter').value;
-        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-        const newsItems = document.querySelectorAll('.news-item');
-        let visibleCount = 0;
-
-        newsItems.forEach(item => {
-            const itemCategory = item.getAttribute('data-categoria');
-            const itemTitle = item.getAttribute('data-titulo');
-            const categoryMatch = category === 'all' || itemCategory === category;
-            const searchMatch = searchTerm === '' || itemTitle.includes(searchTerm);
-            if (categoryMatch && searchMatch) {
-                item.style.display = 'block';
-                visibleCount++;
-            } else {
-                item.style.display = 'none';
-            }
-        });
-        document.getElementById('noResults').style.display = visibleCount === 0 ? 'block' : 'none';
-    }
-    function resetFilters() {
-        document.getElementById('categoryFilter').value = 'all';
-        document.getElementById('searchInput').value = '';
-        filterNews();
-    }
-</script>
 {% endblock %}

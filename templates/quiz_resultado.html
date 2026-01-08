@@ -1,31 +1,37 @@
 {% extends "base.html" %}
 
-{% block title %}Resultado del Quiz - MotorSport{% endblock %}
+{% block title %}Resultado - MotorSport{% endblock %}
 
 {% block content %}
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <div class="card bg-dark text-white border-danger">
-                <div class="card-body text-center">
-                    <h2 class="text-danger mb-3">Resultado del Quiz</h2>
-
+            <div class="card bg-dark text-white {{ 'border-success' if acierto else 'border-danger' }} text-center">
+                <div class="card-body py-5">
                     {% if acierto %}
-                    <p class="lead mb-2">¡Has acertado el circuito!</p>
-                    <p class="mb-2">Tiempo restante: {{ tiempo_restante }} s</p>
-                    <h3 class="display-5 text-warning mb-3">{{ puntos }}/10</h3>
+                    <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
+                    <h2 class="text-success mt-3">¡Correcto!</h2>
+                    <p class="lead">+{{ puntos_ronda }} Puntos</p>
                     {% else %}
-                    <p class="lead mb-2">Respuesta incorrecta.</p>
-                    <p class="mb-2">El circuito correcto era: <strong>{{ respuesta_correcta }}</strong></p>
-                    <h3 class="display-5 text-warning mb-3">0/10</h3>
+                    <i class="bi bi-x-circle-fill text-danger" style="font-size: 4rem;"></i>
+                    <h2 class="text-danger mt-3">¡Incorrecto!</h2>
+                    <p class="mb-3">Era: <strong>{{ respuesta_correcta }}</strong></p>
                     {% endif %}
 
-                    <a href="{{ url_for('quiz') }}" class="btn btn-outline-light me-2">
-                        Repetir quiz
-                    </a>
-                    <a href="{{ url_for('home') }}" class="btn btn-danger">
-                        Volver al inicio
-                    </a>
+                    <hr class="border-secondary">
+                    <p class="text-muted">Puntuación Total: {{ puntos_total }}</p>
+
+                    <div class="mt-4">
+                        {% if es_ultimo %}
+                        <a href="{{ url_for('quiz_final') }}" class="btn btn-warning btn-lg w-100">
+                            Ver Resultados Finales <i class="bi bi-trophy-fill"></i>
+                        </a>
+                        {% else %}
+                        <a href="{{ url_for('quiz_juego') }}" class="btn btn-primary btn-lg w-100">
+                            Siguiente Pregunta <i class="bi bi-arrow-right"></i>
+                        </a>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>

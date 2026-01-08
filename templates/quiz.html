@@ -1,123 +1,229 @@
 {% extends "base.html" %}
 
-{% block title %}Quiz de Circuitos - MotorSport{% endblock %}
-
-{% block extra_css %}
-<style>
-    .quiz-wrapper {
-        max-width: 800px;
-        margin: 0 auto;
-    }
-
-    .timer-circle {
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        border: 4px solid #dc3545;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-        font-weight: bold;
-    }
-
-    .option-btn {
-        margin-bottom: 10px;
-    }
-</style>
-{% endblock %}
+{% block title %}Ronda {{ ronda }} - MotorSport{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="quiz-wrapper">
-        <h1 class="text-danger mb-3">
-            <i class="bi bi-flag-fill"></i> Quiz: Adivina el circuito
-        </h1>
-        <p class="text-muted mb-4">
-            Escucha el sonido del motor rodando y elige en qué circuito está corriendo.
-            Cuanto menos tiempo tardes, más puntos obtendrás.
-        </p>
+<div class="container py-5 text-center">
+    <div class="d-flex justify-content-between align-items-center mb-4 mx-auto" style="max-width: 600px;">
+        <span class="badge bg-warning text-dark fs-6">Ronda {{ ronda }} / {{ total }}</span>
+        <span class="badge bg-secondary fs-6">Puntos: {{ puntos }}</span>
+    </div>
 
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <button id="btnPlay" class="btn btn-danger me-2">
-                    <i class="bi bi-play-fill"></i> Reproducir sonido
-                </button>
-                <audio id="audioCircuito" src="{{ pregunta.audio }}"></audio>
+    <div class="mb-3">
+        <span id="timerDisplay" class="display-4 fw-bold text-danger"
+            style="text-shadow: 0 0 10px rgba(220, 53, 69, 0.8);">20</span>
+        <span class="text-white small">segundos</span>
+    </div>
+
+    <div class="card bg-dark text-white border-secondary mx-auto" style="max-width: 600px;">
+        <div class="card-body p-4">
+            <h3 class="text-danger mb-3"><i class="bi bi-soundwave"></i> Escucha el Motor</h3>
+
+            <div class="position-relative mb-4"
+                style="height: 180px; background: #000; border-radius: 15px; overflow: hidden; border: 2px solid #dc3545; box-shadow: 0 0 15px rgba(220, 53, 69, 0.3) inset;">
+                <canvas id="visualizer" style="width: 100%; height: 100%; display: block;"></canvas>
+
+                <div id="playOverlay"
+                    class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+                    style="background: rgba(0,0,0,0.3);">
+                    <button id="btnPlay"
+                        class="btn btn-danger rounded-circle p-0 d-flex align-items-center justify-content-center"
+                        style="width: 70px; height: 70px; box-shadow: 0 0 20px #dc3545; transition: all 0.2s;">
+                        <i id="playIcon" class="bi bi-play-fill" style="font-size: 3rem; margin-left: 5px;"></i>
+                    </button>
+                </div>
             </div>
-            <div class="timer-circle" id="timerCircle">
-                <span id="timerValue">{{ tiempo_max }}</span>
-            </div>
+
+            <audio id="audioElement" src="{{ pregunta.audio_path }}" crossorigin="anonymous"></audio>
+
+            <form id="quizForm" action="{{ url_for('quiz_submit') }}" method="POST">
+                <input type="hidden" name="pregunta_id" value="{{ pregunta.id }}">
+                <div class="d-grid gap-3">
+                    {% for opcion in opciones %}
+                    <button type="submit" name="respuesta" value="{{ opcion }}"
+                        class="btn btn-outline-light btn-lg text-start px-4 fw-bold answer-btn"
+                        style="border-width: 2px;">
+                        <i class="bi bi-flag-fill me-2 text-danger"></i> {{ opcion }}
+                    </button>
+                    {% endfor %}
+                    <input type="hidden" name="respuesta" value="TIMEOUT_NO_ANSWER">
+                </div>
+            </form>
         </div>
-
-        <form id="quizForm" method="POST" action="{{ url_for('quiz_submit') }}">
-            <input type="hidden" name="pregunta_id" value="{{ pregunta.id }}">
-            <input type="hidden" name="tiempo_restante" id="tiempoRestante" value="{{ tiempo_max }}">
-            <input type="hidden" name="respuesta" id="respuestaInput">
-
-            <div class="mb-3">
-                <h5 class="text-white">¿En qué circuito está rodando este coche?</h5>
-            </div>
-
-            {% for opcion in pregunta.opciones %}
-            <button type="button" class="btn btn-outline-light w-100 option-btn"
-                onclick="seleccionarRespuesta('{{ opcion }}')">
-                {{ opcion }}
-            </button>
-            {% endfor %}
-
-            <button type="submit" class="btn btn-danger w-100 mt-3" disabled id="btnEnviar">
-                Enviar respuesta
-            </button>
-        </form>
     </div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-    const tiempoMax = "{{ tiempo_max }}";
-    let tiempoActual = tiempoMax;
-    let intervalId = null;
-    const timerValue = document.getElementById('timerValue');
-    const tiempoRestanteInput = document.getElementById('tiempoRestante');
-    const audio = document.getElementById('audioCircuito');
     const btnPlay = document.getElementById('btnPlay');
-    const btnEnviar = document.getElementById('btnEnviar');
-    const respuestaInput = document.getElementById('respuestaInput');
+    const playIcon = document.getElementById('playIcon');
+    const audio = document.getElementById('audioElement');
+    const playOverlay = document.getElementById('playOverlay');
+    const canvas = document.getElementById('visualizer');
+    const canvasCtx = canvas.getContext('2d');
+    const timerDisplay = document.getElementById('timerDisplay');
+    const quizForm = document.getElementById('quizForm');
 
+    let audioCtx;
+    let analyser;
+    let source;
+    let isInitialized = false;
+
+    // VARIABLES DEL JUEGO
+    let timeLeft = 40; // 20 segundos
+    let timerInterval = null;
+    let gameStarted = false;
+
+    // Configuración del Canvas
+    function resizeCanvas() {
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = canvas.offsetWidth * dpr;
+        canvas.height = canvas.offsetHeight * dpr;
+        canvasCtx.scale(dpr, dpr);
+    }
+    window.addEventListener('resize', resizeCanvas);
+    setTimeout(resizeCanvas, 100);
+
+    // --- LÓGICA DEL TEMPORIZADOR ---
     function startTimer() {
-        if (intervalId) return;
-        intervalId = setInterval(() => {
-            tiempoActual--;
-            if (tiempoActual < 0) {
-                tiempoActual = 0;
-                clearInterval(intervalId);
-                intervalId = null;
-                btnEnviar.disabled = true; // sin tiempo, sin enviar
+        if (gameStarted) return; // Si ya empezó, no hacemos nada
+        gameStarted = true;
+
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            timerDisplay.innerText = timeLeft;
+
+            // Cambiar color si queda poco tiempo
+            if (timeLeft <= 5) {
+                timerDisplay.classList.add('text-warning'); // Amarillo si < 5s
             }
-            timerValue.textContent = tiempoActual;
-            tiempoRestanteInput.value = tiempoActual;
+
+            // TIEMPO AGOTADO
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                audio.pause();
+                // Enviamos el formulario automáticamente
+                quizForm.submit();
+            }
         }, 1000);
     }
 
+    // --- LÓGICA PLAY / PAUSE ---
     btnPlay.addEventListener('click', () => {
-        audio.currentTime = 0;
-        audio.play();
-        startTimer();
-    });
+        // 1. Iniciar AudioContext (necesario primera vez)
+        if (!isInitialized) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioCtx.createAnalyser();
+            source = audioCtx.createMediaElementSource(audio);
+            source.connect(analyser);
+            analyser.connect(audioCtx.destination);
+            analyser.fftSize = 128;
+            analyser.smoothingTimeConstant = 0.85;
+            isInitialized = true;
+            draw();
 
-    function seleccionarRespuesta(opcion) {
-        respuestaInput.value = opcion;
-        btnEnviar.disabled = false;
-    }
+            // ARRANCAR EL TEMPORIZADOR (Solo la primera vez)
+            startTimer();
+        }
 
-    // Evitar enviar sin respuesta
-    document.getElementById('quizForm').addEventListener('submit', (e) => {
-        if (!respuestaInput.value) {
-            e.preventDefault();
-            alert('Selecciona una respuesta antes de enviar.');
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+
+        // 2. Alternar entre Play y Pause
+        if (audio.paused) {
+            audio.play();
+            playIcon.classList.remove('bi-play-fill');
+            playIcon.classList.add('bi-pause-fill');
+            playIcon.style.marginLeft = "0"; // Ajuste visual del icono
+
+            // Hacer el overlay más transparente para ver mejor
+            playOverlay.style.background = 'rgba(0,0,0,0.1)';
+        } else {
+            audio.pause();
+            playIcon.classList.remove('bi-pause-fill');
+            playIcon.classList.add('bi-play-fill');
+            playIcon.style.marginLeft = "5px"; // Ajuste visual del icono
+
+            // Oscurecer un poco al pausar
+            playOverlay.style.background = 'rgba(0,0,0,0.4)';
         }
     });
+
+    // --- VISUALIZADOR (Código anterior mejorado) ---
+    function draw() {
+        requestAnimationFrame(draw);
+
+        const bufferLength = analyser.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
+        analyser.getByteFrequencyData(dataArray);
+
+        const width = canvas.offsetWidth;
+        const height = canvas.offsetHeight;
+
+        canvasCtx.clearRect(0, 0, width, height);
+
+        const totalSpacing = width * 0.2;
+        const totalBarWidth = width - totalSpacing;
+        const effectiveBars = Math.floor(bufferLength * 0.7);
+        const barWidth = totalBarWidth / effectiveBars;
+        const spacing = totalSpacing / effectiveBars;
+
+        let x = spacing / 2;
+
+        canvasCtx.lineWidth = barWidth;
+        canvasCtx.lineCap = 'round';
+        canvasCtx.strokeStyle = 'rgb(255, 40, 40)';
+        canvasCtx.shadowBlur = barWidth * 1.5;
+        canvasCtx.shadowColor = 'rgba(255, 0, 0, 0.8)';
+
+        canvasCtx.beginPath();
+
+        for (let i = 0; i < effectiveBars; i++) {
+            let barHeight = (dataArray[i] / 255) * height * 0.9;
+            // Si el audio está pausado, dataArray devolverá 0 o valores fijos bajos
+            // Mantenemos un puntito mínimo para que no desaparezca todo
+            barHeight = Math.max(barWidth, barHeight);
+
+            const xCenter = x + barWidth / 2;
+            const yBottom = height - barWidth / 2;
+            const yTop = height - barHeight + barWidth / 2;
+
+            canvasCtx.moveTo(xCenter, yBottom);
+            canvasCtx.lineTo(xCenter, yTop);
+
+            x += barWidth + spacing;
+        }
+        canvasCtx.stroke();
+        canvasCtx.shadowBlur = 0;
+    }
 </script>
+
+<style>
+    /* Efecto hover */
+    #btnPlay:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 30px #dc3545 !important;
+    }
+
+    /* Animación del timer cuando queda poco tiempo */
+    .text-warning {
+        animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+        0% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 0.5;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+</style>
 {% endblock %}

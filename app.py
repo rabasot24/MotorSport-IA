@@ -1,208 +1,64 @@
-from flask import Flask, render_template, jsonify, request, redirect, url_for, session
-import json
-import os
-import requests
+from flask import Flask, render_template, redirect, url_for, request, flash, session
+from flask_login import (
+    LoginManager,
+    login_user,
+    logout_user,
+    login_required,
+    current_user,
+)
+from config import Config
+from models import db, User, Vehicle, Article, Circuit, Category
+import random
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY", "motorsport_secret_key_2025_fallback")
-DEBUG_MODE = os.environ.get("FLASK_DEBUG", "False").lower() == "true"
+app.config.from_object(Config)
 
-# Vehículos destacados/locales y función para pedir a NHTSA API
-DESTACADOS = [
-    {"marca": "Ferrari", "modelo": "F2004", "categoria": "Fórmula 1", "epoca": "2000s"},
-    {"marca": "McLaren", "modelo": "MP4/4", "categoria": "Fórmula 1", "epoca": "1980s"},
-    {"marca": "Audi", "modelo": "Quattro S1", "categoria": "Rally", "epoca": "1980s"},
-    {"marca": "Ford", "modelo": "GT40", "categoria": "Le Mans", "epoca": "1960s"},
-    {"marca": "Porsche", "modelo": "917", "categoria": "Le Mans", "epoca": "1970s"},
-    {"marca": "Toyota", "modelo": "Supra", "categoria": "GT", "epoca": "1990s"},
-]
-
-NHTSA_CACHE = {}
+# Inicializar DB y Login Manager
+db.init_app(app)
+login_manager = LoginManager(app)
+login_manager.login_view = "login"
 
 
-def get_nhtsa_info(make, model_name):
-    """Consulta la API vPIC de NHTSA y usa caché en memoria."""
-    cache_key = f"{make.lower()}_{model_name.lower()}"
-    if cache_key in NHTSA_CACHE:
-        return NHTSA_CACHE[cache_key]
-
-    url = f"https://vpic.nhtsa.dot.gov/api/vehicles/GetModelsForMake/{make}?format=json"
-    try:
-        response = requests.get(url, timeout=5)
-        response.raise_for_status()
-        all_models = response.json().get("Results", [])
-        filtered = [
-            m
-            for m in all_models
-            if model_name.lower() in m.get("Model_Name", "").lower()
-        ]
-        NHTSA_CACHE[cache_key] = filtered
-        return filtered
-    except requests.RequestException as e:
-        print(f"⚠️  Error de red consultando NHTSA: {e}")
-        return []
-    except Exception as e:
-        print(f"⚠️  Error inesperado consultando NHTSA: {e}")
-        return []
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 
-# -------------------------
-# QUIZ: circuitos por sonido
-# -------------------------
-
-QUIZ_PREGUNTAS = [
-    {
-        "id": 1,
-        "audio": "/static/sounds/quiz/spa.mp3",
-        "opciones": ["Monza", "Spa-Francorchamps", "Silverstone", "Suzuka"],
-        "correcta": "Spa-Francorchamps",
-    },
-    {
-        "id": 2,
-        "audio": "/static/sounds/quiz/monza.mp3",
-        "opciones": ["Monza", "Mónaco", "Interlagos", "Red Bull Ring"],
-        "correcta": "Monza",
-    },
-    # Añade más preguntas con sus audios
-]
-
-QUIZ_TIEMPO_MAX = 20  # segundos por pregunta
+# --- RUTAS PUBLICAS ---
 
 
-@app.route("/quiz")
-def quiz():
-    # Por ahora mostramos siempre la primera pregunta
-    pregunta = QUIZ_PREGUNTAS[0]
-    return render_template("quiz.html", pregunta=pregunta, tiempo_max=QUIZ_TIEMPO_MAX)
-
-
-@app.route("/quiz/submit", methods=["POST"])
-def quiz_submit():
-    pregunta_id = int(request.form.get("pregunta_id", 0))
-    respuesta = request.form.get("respuesta")
-    tiempo_restante = int(request.form.get("tiempo_restante", 0))
-
-    pregunta = next((p for p in QUIZ_PREGUNTAS if p["id"] == pregunta_id), None)
-    if not pregunta:
-        return redirect(url_for("quiz"))
-
-    acierto = respuesta == pregunta["correcta"]
-
-    # Puntuación: si acierta, proporcional al tiempo restante
-    puntos = 0
-    if acierto and tiempo_restante > 0:
-        puntos = int((tiempo_restante / QUIZ_TIEMPO_MAX) * 10)  # 0-10
-
-    # Guardar en sesión para usar en perfil
-    session["ultimo_quiz_aciertos"] = 1 if acierto else 0
-    session["ultimo_quiz_total"] = 1
-    session["ultimo_quiz_puntuacion"] = puntos
-
-    return render_template(
-        "quiz_resultado.html",
-        acierto=acierto,
-        respuesta_correcta=pregunta["correcta"],
-        puntos=puntos,
-        tiempo_restante=tiempo_restante,
-    )
-
-
-@app.route("/api/vehiculos/agrupados")
-def api_vehiculos_agrupados():
-    agrupados = {}
-    for v in DESTACADOS:
-        key = (v["categoria"], v["epoca"])
-        if key not in agrupados:
-            agrupados[key] = []
-        info_api = get_nhtsa_info(v["marca"], v["modelo"])
-        agrupados[key].append(
-            {
-                "marca": v["marca"],
-                "modelo": v["modelo"],
-                "categoria": v["categoria"],
-                "epoca": v["epoca"],
-                "info_api": info_api,
-            }
-        )
-    res = []
-    for (cat, epoca), vehs in agrupados.items():
-        res.append({"categoria": cat, "epoca": epoca, "vehiculos": vehs})
-    return jsonify(res)
-
-
-# MOCK DATA/LOCAL FILES:
-def cargar_json(filename):
-    """Función auxiliar para cargar datos JSON de mockdata."""
-    filepath = os.path.join("mockdata", filename)
-    try:
-        with open(filepath, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except FileNotFoundError:
-        print(f"⚠️  Advertencia: No se encontró {filename}")
-        return []
-    except json.JSONDecodeError as e:
-        print(f"⚠️  Error al leer {filename}: {e}")
-        return []
-
-
-def cargar_noticias():
-    return cargar_json("noticias.json")
-
-
-def cargar_vehiculos():
-    return cargar_json("vehiculos.json")
-
-
-# Rutas principales frontend
 @app.route("/")
 def home():
-    noticias = cargar_noticias()[:3]
-    vehiculos = cargar_vehiculos()[:4]
+    noticias = Article.query.order_by(Article.date.desc()).limit(3).all()
+    vehiculos = Vehicle.query.limit(4).all()
     return render_template("home.html", noticias=noticias, vehiculos=vehiculos)
 
 
 @app.route("/noticias")
 def noticias():
-    todas_noticias = cargar_noticias()
-    return render_template("noticias.html", noticias=todas_noticias)
+    noticias = Article.query.all()
+    return render_template("noticias.html", noticias=noticias)
 
 
 @app.route("/noticias/<int:id>")
 def noticia_detalle(id):
-    noticias = cargar_noticias()
-    noticia = next((n for n in noticias if n["id"] == id), None)
-    if noticia:
-        return render_template("noticia_detalle.html", noticia=noticia)
-    return redirect(url_for("noticias"))
+    noticia = Article.query.get_or_404(id)
+    return render_template("noticia_detalle.html", noticia=noticia)
 
 
 @app.route("/vehiculos")
 def vehiculos():
-    todos_vehiculos = cargar_vehiculos()
-    return render_template("vehiculos.html", vehiculos=todos_vehiculos)
+    vehiculos = Vehicle.query.all()
+    return render_template("vehiculos.html", vehiculos=vehiculos)
 
 
 @app.route("/vehiculos/<int:id>")
 def vehiculo_detalle(id):
-    vehiculos_list = cargar_vehiculos()
-    vehiculo = next((v for v in vehiculos_list if v["id"] == id), None)
-    if vehiculo:
-        return render_template("vehiculo_detalle.html", vehiculo=vehiculo)
-    return redirect(url_for("vehiculos"))
+    vehiculo = Vehicle.query.get_or_404(id)
+    return render_template("vehiculo_detalle.html", vehiculo=vehiculo)
 
 
-@app.route("/perfil")
-def perfil():
-    if "user" not in session:
-        return redirect(url_for("login"))
-    return render_template("perfil.html")
-
-
-@app.route("/admin")
-def admin():
-    if "user" not in session or session.get("role") != "admin":
-        return redirect(url_for("login"))
-    return render_template("admin.html")
+# --- LOGIN Y REGISTRO ---
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -210,10 +66,14 @@ def login():
     if request.method == "POST":
         email = request.form.get("email")
         password = request.form.get("password")
-        # Modo demo (acepta cualquier login)
-        session["user"] = email
-        session["role"] = "user"
-        return redirect(url_for("perfil"))
+        user = User.query.filter_by(email=email).first()
+
+        if user and user.check_password(password):
+            login_user(user)
+            return redirect(url_for("perfil"))
+        else:
+            flash("Credenciales incorrectas")
+
     return render_template("login.html")
 
 
@@ -221,77 +81,192 @@ def login():
 def register():
     username = request.form.get("username")
     email = request.form.get("email")
-    session["user"] = email
-    session["role"] = "user"
+    password = request.form.get("password")
+
+    if User.query.filter_by(email=email).first():
+        return redirect(url_for("login"))
+
+    new_user = User(username=username, email=email)
+    new_user.set_password(password)
+    db.session.add(new_user)
+    db.session.commit()
+
+    login_user(new_user)
     return redirect(url_for("perfil"))
 
 
 @app.route("/logout")
+@login_required
 def logout():
-    session.clear()
+    logout_user()
     return redirect(url_for("home"))
 
 
-# API endpoints mockdata
-@app.route("/api/vehiculos")
-def api_vehiculos():
-    vehiculos_list = cargar_vehiculos()
-    categoria = request.args.get("categoria")
-    busqueda = request.args.get("q")
-    if categoria and categoria != "Todas las categorías":
-        vehiculos_list = [v for v in vehiculos_list if v.get("categoria") == categoria]
-    if busqueda:
-        vehiculos_list = [
-            v for v in vehiculos_list if busqueda.lower() in v["nombre"].lower()
-        ]
-    return jsonify(vehiculos_list)
+@app.route("/perfil")
+@login_required
+def perfil():
+    return render_template("perfil.html")
 
 
-@app.route("/api/noticias")
-def api_noticias():
-    noticias = cargar_noticias()
-    return jsonify(noticias)
+@app.route("/perfil/editar", methods=["POST"])
+@login_required
+def editar_perfil():
+    nuevo_username = request.form.get("username")
+    nuevo_email = request.form.get("email")
+    bio = request.form.get("bio")
+
+    current_user.username = nuevo_username
+    current_user.email = nuevo_email
+    current_user.settings = {"bio": bio}
+
+    db.session.commit()
+    flash("Perfil actualizado correctamente")
+    return redirect(url_for("perfil"))
 
 
-@app.route("/api/vehiculos/detalles")
-def api_vehiculos_detalles():
-    vehiculos_list = cargar_vehiculos()
-    return jsonify(vehiculos_list)
+# --- QUIZ (JUEGO) ---
 
 
-# ERRORES
-@app.errorhandler(404)
-def page_not_found(e):
-    return (
-        "<h1>404 - Página no encontrada</h1><p>La página que buscas no existe.</p>",
-        404,
+@app.route("/quiz")
+def quiz():
+    # Muestra la bienvenida (Esto arregla el error de BuildError)
+    return render_template("quiz_intro.html")
+
+
+@app.route("/quiz/start")
+def quiz_start():
+    # Inicia nueva partida
+    all_circuits = Circuit.query.with_entities(Circuit.id).all()
+    ids = [c.id for c in all_circuits]
+    random.shuffle(ids)
+
+    session["quiz_indices"] = ids[:10]
+    session["quiz_score"] = 0
+    session["quiz_round"] = 1
+    session["total_rounds"] = len(session["quiz_indices"])
+
+    return redirect(url_for("quiz_juego"))
+
+
+@app.route("/quiz/juego")
+def quiz_juego():
+    # Logica de mostrar pregunta
+    if "quiz_indices" not in session:
+        return redirect(url_for("quiz"))  # Redirige a la portada si no hay sesión
+
+    if not session["quiz_indices"]:
+        return redirect(url_for("quiz_final"))
+
+    current_circuit_id = session["quiz_indices"][0]
+    pregunta = Circuit.query.get(current_circuit_id)
+
+    circuitos = Circuit.query.all()
+    opciones = [pregunta.name]
+    otros = [c.name for c in circuitos if c.id != pregunta.id]
+    if len(otros) >= 2:
+        opciones.extend(random.sample(otros, 2))
+    else:
+        opciones.extend(otros)
+    random.shuffle(opciones)
+
+    return render_template(
+        "quiz.html",
+        pregunta=pregunta,
+        opciones=opciones,
+        ronda=session["quiz_round"],
+        total=session["total_rounds"],
+        puntos=session["quiz_score"],
     )
 
 
-@app.errorhandler(500)
-def internal_error(e):
-    return f"<h1>500 - Error del servidor</h1><p>Error: {str(e)}</p>", 500
+@app.route("/quiz/submit", methods=["POST"])
+def quiz_submit():
+    pregunta_id = int(request.form.get("pregunta_id"))
+    respuesta = request.form.get("respuesta")
+
+    circuito = Circuit.query.get(pregunta_id)
+    acierto = circuito.name == respuesta
+
+    puntos_ganados = 10 if acierto else 0
+    session["quiz_score"] += puntos_ganados
+
+    indices = session["quiz_indices"]
+    if indices:
+        indices.pop(0)
+    session["quiz_indices"] = indices
+    session["quiz_round"] += 1
+    session.modified = True
+
+    es_ultimo = len(indices) == 0
+
+    return render_template(
+        "quiz_resultado.html",
+        acierto=acierto,
+        respuesta_correcta=circuito.name,
+        puntos_ronda=puntos_ganados,
+        puntos_total=session["quiz_score"],
+        es_ultimo=es_ultimo,
+    )
+
+
+@app.route("/quiz/final")
+def quiz_final():
+    score = session.get("quiz_score", 0)
+    total = session.get("total_rounds", 10)
+    session.pop("quiz_indices", None)
+
+    return render_template("quiz_final.html", score=score, total=total * 10)
+
+
+# --- ADMIN PANEL ---
+
+
+@app.route("/admin")
+@login_required
+def admin_panel():
+    if current_user.role != "admin":
+        flash("Acceso denegado.")
+        return redirect(url_for("perfil"))
+
+    noticias = Article.query.order_by(Article.date.desc()).all()
+    return render_template("admin.html", noticias=noticias)
+
+
+@app.route("/admin/crear-noticia", methods=["POST"])
+@login_required
+def crear_noticia():
+    if current_user.role != "admin":
+        return redirect(url_for("home"))
+
+    titulo = request.form.get("titulo")
+    contenido = request.form.get("contenido")
+    imagen = request.form.get("imagen")
+    categoria = Category.query.first()
+
+    nueva_noticia = Article(
+        title=titulo,
+        content=contenido,
+        image=imagen,
+        author_id=current_user.id,
+        category_id=categoria.id if categoria else None,
+    )
+
+    db.session.add(nueva_noticia)
+    db.session.commit()
+    return redirect(url_for("admin_panel"))
+
+
+@app.route("/admin/borrar-noticia/<int:id>")
+@login_required
+def borrar_noticia(id):
+    if current_user.role != "admin":
+        return redirect(url_for("home"))
+
+    noticia = Article.query.get_or_404(id)
+    db.session.delete(noticia)
+    db.session.commit()
+    return redirect(url_for("admin_panel"))
 
 
 if __name__ == "__main__":
-    print("=" * 60)
-    print("🚀 SERVIDOR FLASK INICIADO")
-    print("=" * 60)
-    print("📍 URL: http://127.0.0.1:5000")
-    print("📍 URL alternativa: http://localhost:5000")
-    print("⏹️  Para detener: Presiona Ctrl+C")
-    print("=" * 60)
-    if os.path.exists("mockdata/noticias.json"):
-        print("✅ noticias.json encontrado")
-    else:
-        print("❌ noticias.json NO encontrado")
-    if os.path.exists("mockdata/vehiculos.json"):
-        print("✅ vehiculos.json encontrado")
-    else:
-        print("❌ vehiculos.json NO encontrado")
-    if os.path.exists("templates/home.html"):
-        print("✅ home.html encontrado")
-    else:
-        print("❌ home.html NO encontrado")
-    print("=" * 60)
-    app.run(debug=DEBUG_MODE, host="127.0.0.1", port=5000)
+    app.run(debug=True)

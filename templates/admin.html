@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Panel de Administración - MotorSport{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-3 mb-4">
+            <div class="card bg-dark text-white border-danger">
+                <div class="card-header border-danger">Menú Admin</div>
+                <div class="list-group list-group-flush">
+                    <a href="#" class="list-group-item list-group-item-action bg-dark text-white active">
+                        <i class="bi bi-newspaper"></i> Gestionar Noticias
+                    </a>
+                    <a href="{{ url_for('perfil') }}" class="list-group-item list-group-item-action bg-dark text-white">
+                        <i class="bi bi-person"></i> Volver al Perfil
+                    </a>
+                    <a href="{{ url_for('logout') }}"
+                        class="list-group-item list-group-item-action bg-dark text-danger">
+                        <i class="bi bi-box-arrow-left"></i> Cerrar Sesión
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <h2 class="text-white mb-4">Gestión de Noticias</h2>
+
+            <div class="card bg-dark text-white border-secondary mb-5">
+                <div class="card-header border-secondary fw-bold text-success">
+                    <i class="bi bi-plus-circle"></i> Publicar Nueva Noticia
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('crear_noticia') }}" method="POST">
+                        <div class="mb-3">
+                            <label class="form-label">Título</label>
+                            <input type="text" name="titulo" class="form-control bg-black text-white border-secondary"
+                                required placeholder="Ej: Ferrari gana en Monza">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">URL de Imagen</label>
+                            <input type="text" name="imagen" class="form-control bg-black text-white border-secondary"
+                                placeholder="https://...">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Contenido</label>
+                            <textarea name="contenido" rows="4"
+                                class="form-control bg-black text-white border-secondary" required
+                                placeholder="Escribe aquí el cuerpo de la noticia..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success">Publicar Noticia</button>
+                    </form>
+                </div>
+            </div>
+
+            <h3 class="text-white mb-3">Noticias Publicadas</h3>
+            <div class="table-responsive">
+                <table class="table table-dark table-hover border-secondary">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Título</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for noticia in noticias %}
+                        <tr>
+                            <td>{{ noticia.date.strftime('%Y-%m-%d') if noticia.date else '-' }}</td>
+                            <td>{{ noticia.title }}</td>
+                            <td>
+                                <a href="{{ url_for('borrar_noticia', id=noticia.id) }}" class="btn btn-sm btn-danger"
+                                    onclick="return confirm('¿Seguro que quieres borrar esta noticia?');">
+                                    <i class="bi bi-trash"></i> Borrar
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
