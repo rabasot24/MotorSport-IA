@@ -1,243 +1,174 @@
 {% extends "base.html" %}
 
-{% block title %}MotorSport - Inicio{% endblock %}
-
-{% block extra_css %}
-<style>
-    .hero-section {
-        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-        padding: 120px 0;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .hero-title {
-        font-size: 4rem;
-        font-weight: 900;
-        background: linear-gradient(135deg, #dc3545, #ffc107);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        margin-bottom: 20px;
-    }
-
-    .stats-section {
-        background-color: #1a1a1a;
-        padding: 60px 0;
-        border-top: 2px solid var(--primary-color);
-        border-bottom: 2px solid var(--primary-color);
-    }
-
-    .stat-box {
-        text-align: center;
-        padding: 30px;
-    }
-
-    .stat-number {
-        font-size: 3rem;
-        font-weight: bold;
-        color: var(--primary-color);
-    }
-
-    .stat-label {
-        font-size: 1.2rem;
-        color: #888;
-        margin-top: 10px;
-    }
-
-    .section-title {
-        font-size: 2.5rem;
-        font-weight: bold;
-        margin-bottom: 40px;
-        text-align: center;
-        color: var(--primary-color);
-    }
-
-    .vehicle-card {
-        background: linear-gradient(145deg, #1a1a1a, #2d2d2d);
-        border: 2px solid rgba(220, 53, 69, 0.3);
-        border-radius: 15px;
-        overflow: hidden;
-        transition: transform 0.3s, box-shadow 0.3s;
-        margin-bottom: 30px;
-        height: 100%;
-    }
-
-    .vehicle-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 10px 30px rgba(220, 53, 69, 0.5);
-        border-color: var(--primary-color);
-    }
-
-    .vehicle-card img {
-        width: 100%;
-        height: 200px;
-        object-fit: cover;
-    }
-
-    .news-card {
-        background-color: #1a1a1a;
-        border-radius: 10px;
-        overflow: hidden;
-        margin-bottom: 30px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        transition: all 0.3s;
-    }
-
-    .news-card:hover {
-        border-color: var(--primary-color);
-        transform: translateY(-5px);
-    }
-
-    .news-date {
-        color: var(--accent-color);
-        font-size: 0.9rem;
-    }
-
-    .quiz-section {
-        background: linear-gradient(135deg, var(--primary-color), #8b0000);
-        padding: 80px 0;
-        text-align: center;
-        margin: 60px 0;
-    }
-
-    .btn-primary-custom {
-        background: linear-gradient(135deg, var(--primary-color), #c82333);
-        border: none;
-        padding: 15px 40px;
-        font-size: 1.2rem;
-        border-radius: 50px;
-        transition: all 0.3s;
-    }
-
-    .btn-primary-custom:hover {
-        transform: scale(1.05);
-        box-shadow: 0 5px 20px rgba(220, 53, 69, 0.6);
-    }
-
-    @media (max-width: 768px) {
-        .hero-title {
-            font-size: 2.5rem !important;
-        }
-
-        .stat-number {
-            font-size: 2rem !important;
-        }
-    }
-</style>
-{% endblock %}
+{% block title %}Inicio - MotorSport{% endblock %}
 
 {% block content %}
-<section class="hero-section">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-8">
-                <h1 class="hero-title">Vive la Pasión Motor</h1>
-                <p class="lead mb-4">Noticias, vehículos legendarios, sonidos únicos y desafíos interactivos. Todo en
-                    una experiencia premium.</p>
-                <a href="{{ url_for('vehiculos') }}" class="btn btn-danger btn-lg me-3">Explorar Vehículos</a>
-                <a href="{{ url_for('quiz') }}" class="btn btn-outline-light btn-lg">Hacer Quiz <i
-                        class="bi bi-arrow-right"></i></a>
-            </div>
+
+<div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-black text-white rounded shadow-lg"
+    style="min-height: 600px; display: flex; align-items: center; justify-content: center;">
+
+    <div class="video-background-container position-absolute top-0 start-0 w-100 h-100" style="z-index: 0;">
+        <div class="position-absolute top-0 start-0 w-100 h-100" style="background: rgba(0,0,0,0.5); z-index: 2;"></div>
+
+        <video class="bg-video position-absolute top-0 start-0 w-100 h-100 active" autoplay muted loop playsinline
+            style="object-fit: cover;">
+            <source src="{{ url_for('static', filename='videos/f1_1.mp4') }}" type="video/mp4">
+        </video>
+
+        <video class="bg-video position-absolute top-0 start-0 w-100 h-100" autoplay muted loop playsinline
+            style="object-fit: cover; opacity: 0;">
+            <source src="{{ url_for('static', filename='videos/f1_2.mp4') }}" type="video/mp4">
+        </video>
+
+        <video class="bg-video position-absolute top-0 start-0 w-100 h-100" autoplay muted loop playsinline
+            style="object-fit: cover; opacity: 0;">
+            <source src="{{ url_for('static', filename='videos/rally_1.mp4') }}" type="video/mp4">
+        </video>
+
+        <video class="bg-video position-absolute top-0 start-0 w-100 h-100" autoplay muted loop playsinline
+            style="object-fit: cover; opacity: 0;">
+            <source src="{{ url_for('static', filename='videos/rally_2.mp4') }}" type="video/mp4">
+        </video>
+
+        <video class="bg-video position-absolute top-0 start-0 w-100 h-100" autoplay muted loop playsinline
+            style="object-fit: cover; opacity: 0;">
+            <source src="{{ url_for('static', filename='videos/supercar_1.mp4') }}" type="video/mp4">
+        </video>
+
+        <video class="bg-video position-absolute top-0 start-0 w-100 h-100" autoplay muted loop playsinline
+            style="object-fit: cover; opacity: 0;">
+            <source src="{{ url_for('static', filename='videos/supercar_2.mp4') }}" type="video/mp4">
+        </video>
+    </div>
+
+    <div class="col-md-8 p-lg-5 mx-auto position-relative" style="z-index: 3;">
+        <h1 class="display-2 fw-bold mb-3 text-uppercase" style="text-shadow: 2px 2px 10px rgba(0,0,0,0.8);">
+            Vive la Pasión por el Motor
+        </h1>
+        <p class="lead fw-normal mb-4 text-light" style="text-shadow: 1px 1px 5px rgba(0,0,0,0.8);">
+            Descubre las leyendas de la F1, Rally y Supercars. <br>
+            Mantente al día con las últimas noticias y pon a prueba tus conocimientos.
+        </p>
+        <div class="d-flex gap-3 justify-content-center lead fw-normal">
+            <a class="btn btn-danger btn-lg px-4 fw-bold shadow-sm" href="{{ url_for('quiz') }}">
+                <i class="bi bi-controller"></i> Jugar al Quiz
+            </a>
+            <a class="btn btn-outline-light btn-lg px-4 shadow-sm" href="{{ url_for('vehiculos') }}">
+                <i class="bi bi-car-front-fill"></i> Ver Garaje
+            </a>
         </div>
     </div>
-</section>
+</div>
 
-<section class="stats-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4">
-                <div class="stat-box">
-                    <div class="stat-number">{{ vehiculos|length }}+</div>
-                    <div class="stat-label">Vehículos</div>
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary pb-2">
+        <h2 class="text-white fw-bold"><i class="bi bi-newspaper text-danger"></i> Actualidad</h2>
+        <a href="{{ url_for('noticias') }}" class="text-decoration-none text-warning">Ver todas <i
+                class="bi bi-arrow-right"></i></a>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
+        {% for noticia in noticias %}
+        <div class="col">
+            <div class="card h-100 bg-dark text-white border-secondary shadow-sm hover-scale">
+                <div style="height: 180px; overflow: hidden;">
+                    <img src="https://wsrv.nl/?url={{ noticia.image | replace('https://', '') }}&w=400&h=250&fit=cover"
+                        class="card-img-top w-100 h-100" style="object-fit: cover;" alt="{{ noticia.title }}">
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="stat-box">
-                    <div class="stat-number">{{ noticias|length }}+</div>
-                    <div class="stat-label">Noticias</div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="stat-box">
-                    <div class="stat-number">10K+</div>
-                    <div class="stat-label">Usuarios</div>
+                <div class="card-body">
+                    <span class="badge bg-danger mb-2">{{ noticia.category_rel.name }}</span>
+                    <h5 class="card-title fs-6 fw-bold">
+                        <a href="{{ url_for('noticia_detalle', id=noticia.id) }}"
+                            class="text-white text-decoration-none stretched-link">
+                            {{ noticia.title }}
+                        </a>
+                    </h5>
+                    <small class="text-muted"><i class="bi bi-clock"></i> {{ noticia.date.strftime('%d/%m') }}</small>
                 </div>
             </div>
         </div>
+        {% endfor %}
     </div>
-</section>
 
-<section class="py-5">
-    <div class="container">
-        <h2 class="section-title">Vehículos Legendarios</h2>
-        <p class="text-center text-muted mb-5">Los iconos del automovilismo</p>
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary pb-2 mt-5">
+        <h2 class="text-white fw-bold"><i class="bi bi-trophy-fill text-warning"></i> Joyas del Garaje</h2>
+        <a href="{{ url_for('vehiculos') }}" class="text-decoration-none text-warning">Explorar Museo <i
+                class="bi bi-arrow-right"></i></a>
+    </div>
 
-        <div class="row">
-            {% if vehiculos %}
-            {% for vehiculo in vehiculos %}
-            <div class="col-md-3 mb-4">
-                <div class="vehicle-card">
-                    <img src="{{ vehiculo.image }}" alt="{{ vehiculo.name }}">
-                    <div class="p-3">
-                        <h5>{{ vehiculo.name }}</h5>
-                        <p class="text-muted">{{ vehiculo.category }}</p>
-                        <a href="{{ url_for('vehiculo_detalle', id=vehiculo.id) }}"
-                            class="btn btn-sm btn-outline-danger w-100">Ver Detalles</a>
-                    </div>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for coche in vehiculos %}
+        <div class="col">
+            <div class="card h-100 bg-black text-white border-0 shadow position-relative hover-scale">
+                <img src="{{ url_for('static', filename=coche.image) }}" class="card-img w-100 h-100"
+                    style="object-fit: cover; opacity: 0.7; height: 250px !important;" alt="{{ coche.name }}">
+
+                <div class="card-img-overlay d-flex flex-column justify-content-end p-4"
+                    style="background: linear-gradient(to top, black, transparent);">
+                    <h4 class="card-title fw-bold mb-0">{{ coche.name }}</h4>
+                    <p class="card-text text-warning mb-0">{{ coche.horsepower }} CV • {{ coche.year }}</p>
+                    <a href="{{ url_for('vehiculo_detalle', id=coche.id) }}" class="stretched-link"></a>
                 </div>
             </div>
-            {% endfor %}
-            {% else %}
-            <div class="col-12">
-                <div class="alert alert-warning text-center">
-                    <i class="bi bi-exclamation-triangle"></i> No hay vehículos disponibles en la base de datos.
-                </div>
-            </div>
-            {% endif %}
         </div>
+        {% endfor %}
     </div>
-</section>
 
-<section class="quiz-section">
-    <div class="container">
-        <h2 class="display-4 fw-bold mb-3">¿Listo para el Desafío?</h2>
-        <p class="lead mb-4">Pon a prueba tus conocimientos en nuestro quiz de circuitos</p>
-        <a href="{{ url_for('quiz') }}" class="btn btn-light btn-lg px-5">Comenzar Quiz <i
-                class="bi bi-play-fill"></i></a>
+    <div class="bg-danger text-white rounded p-4 p-md-5 mt-5 text-center shadow">
+        <h3>¿Te crees un experto?</h3>
+        <p class="mb-4">Regístrate ahora para guardar tus puntuaciones en el Quiz y comentar en las noticias.</p>
+        {% if current_user.is_authenticated %}
+        <a href="{{ url_for('perfil') }}" class="btn btn-dark btn-lg">Ir a mi Perfil</a>
+        {% else %}
+        <a href="{{ url_for('login') }}" class="btn btn-light btn-lg text-danger fw-bold">Unirse Ahora</a>
+        {% endif %}
     </div>
-</section>
 
-<section class="py-5">
-    <div class="container">
-        <h2 class="section-title">Últimas Noticias</h2>
-        <p class="text-center text-muted mb-5">Mantente al día con el mundo del motor</p>
+</div>
 
-        <div class="row">
-            {% if noticias %}
-            {% for noticia in noticias %}
-            <div class="col-md-4 mb-4">
-                <div class="news-card">
-                    <img src="{{ noticia.image }}" class="w-100" style="height: 200px; object-fit: cover;"
-                        alt="{{ noticia.title }}">
-                    <div class="p-4">
-                        <p class="news-date">{{ noticia.date.strftime('%Y-%m-%d') if noticia.date else 'Reciente' }}</p>
-                        <h5>{{ noticia.title }}</h5>
-                        <p class="text-muted">{{ noticia.content[:100] }}...</p>
-                        <a href="{{ url_for('noticia_detalle', id=noticia.id) }}" class="btn btn-sm btn-danger">Leer
-                            más</a>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-            {% else %}
-            <div class="col-12">
-                <div class="alert alert-warning text-center">
-                    <i class="bi bi-exclamation-triangle"></i> No hay noticias disponibles en la base de datos.
-                </div>
-            </div>
-            {% endif %}
-        </div>
-    </div>
-</section>
+<style>
+    .hover-scale {
+        transition: transform 0.3s;
+    }
+
+    .hover-scale:hover {
+        transform: scale(1.03);
+        z-index: 10;
+    }
+
+    /* Transición suave de opacidad */
+    .bg-video {
+        transition: opacity 1.5s ease-in-out;
+    }
+
+    .bg-video.active {
+        opacity: 1 !important;
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const videos = document.querySelectorAll('.bg-video');
+        let currentVideo = 0;
+
+        // Función para cambiar de video
+        function nextVideo() {
+            // Quitamos la clase 'active' al video actual (se desvanece)
+            videos[currentVideo].style.opacity = '0';
+
+            // Pasamos al siguiente (o volvemos al primero)
+            currentVideo = (currentVideo + 1) % videos.length;
+
+            // Ponemos la clase 'active' al nuevo video (aparece suavemente)
+            videos[currentVideo].style.opacity = '1';
+        }
+
+        // Ejecutar cada 10.000 milisegundos (10 segundos)
+        if (videos.length > 1) {
+            setInterval(nextVideo, 10000);
+        }
+    });
+</script>
+
 {% endblock %}

@@ -2,92 +2,97 @@ from app import app
 from models import db, Circuit
 
 
-def agregar_circuitos():
+def cargar_circuitos_sonido():
     with app.app_context():
-        # Lista ampliada a 10 circuitos legendarios
-        circuitos_nuevos = [
-            {
-                "name": "Spa-Francorchamps",
-                "country": "Bélgica",
-                "audio": "/static/sounds/spa.mp3",
-                "img": "https://media.formula1.com/image/upload/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Belgium_Circuit.png",
-            },
+        print("🔊 SINTONIZANDO MOTORES (COMPLETO)...")
+
+        # 1. Limpieza de circuitos anteriores
+        try:
+            db.session.query(Circuit).delete()
+            db.session.commit()
+        except:
+            db.session.rollback()
+
+        # 2. Lista completa basada en tus archivos MP3
+        datos = [
             {
                 "name": "Mónaco",
                 "country": "Mónaco",
-                "audio": "/static/sounds/monaco.mp3",
-                "img": "https://media.formula1.com/image/upload/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Monoco_Circuit.png",
+                "image": "https://upload.wikimedia.org/wikipedia/commons/3/30/Circuit_de_Monaco_2004-present.svg",
+                "audio": "monaco.mp3",
+            },
+            {
+                "name": "Spa-Francorchamps",
+                "country": "Bélgica",
+                "image": "https://upload.wikimedia.org/wikipedia/commons/5/54/Spa-Francorchamps_of_Belgium.svg",
+                "audio": "spa.mp3",
             },
             {
                 "name": "Silverstone",
                 "country": "Reino Unido",
-                "audio": "/static/sounds/silverstone.mp3",
-                "img": "https://media.formula1.com/image/upload/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Great_Britain_Circuit.png",
+                "image": "https://upload.wikimedia.org/wikipedia/commons/e/ee/Silverstone_Circuit_2024.svg",
+                "audio": "silverstone.mp3",
+            },
+            {
+                "name": "Monza",
+                "country": "Italia",
+                "image": "https://upload.wikimedia.org/wikipedia/commons/5/56/Monza_track_map.svg",
+                "audio": "monza.mp3",
             },
             {
                 "name": "Suzuka",
                 "country": "Japón",
-                "audio": "/static/sounds/suzuka.mp3",
-                "img": "https://media.formula1.com/image/upload/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Japan_Circuit.png",
+                "image": "https://upload.wikimedia.org/wikipedia/commons/0/07/Suzuka_circuit_map_2005.svg",
+                "audio": "suzuka.mp3",
+            },
+            # --- NUEVOS AÑADIDOS SEGÚN TU FOTO ---
+            {
+                "name": "Bahrain",
+                "country": "Baréin",
+                "image": "https://upload.wikimedia.org/wikipedia/commons/2/29/Bahrain_International_Circuit--Grand_Prix_Layout.svg",
+                "audio": "bahrain.mp3",
+            },
+            {
+                "name": "Barcelona-Catalunya",
+                "country": "España",
+                "image": "https://upload.wikimedia.org/wikipedia/commons/2/20/Catalunya.svg",
+                "audio": "catalunya.mp3",
             },
             {
                 "name": "Interlagos",
                 "country": "Brasil",
-                "audio": "/static/sounds/interlagos.mp3",
-                "img": "https://media.formula1.com/image/upload/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Brazil_Circuit.png",
+                "image": "https://upload.wikimedia.org/wikipedia/commons/9/9d/Interlagos_Circuit_2023.svg",
+                "audio": "interlagos.mp3",
             },
             {
                 "name": "Red Bull Ring",
                 "country": "Austria",
-                "audio": "/static/sounds/redbullring.mp3",
-                "img": "https://media.formula1.com/image/upload/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Austria_Circuit.png",
-            },
-            {
-                "name": "Circuit de Barcelona-Catalunya",
-                "country": "España",
-                "audio": "/static/sounds/catalunya.mp3",
-                "img": "https://media.formula1.com/image/upload/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Spain_Circuit.png",
+                "image": "https://upload.wikimedia.org/wikipedia/commons/3/3d/Red_Bull_Ring_2022.svg",
+                "audio": "redbullring.mp3",
             },
             {
                 "name": "Zandvoort",
                 "country": "Países Bajos",
-                "audio": "/static/sounds/zandvoort.mp3",
-                "img": "https://media.formula1.com/image/upload/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Netherlands_Circuit.png",
+                "image": "https://upload.wikimedia.org/wikipedia/commons/f/f6/Circuit_Zandvoort_2020.svg",
+                "audio": "zandvoort.mp3",
             },
-            {
-                "name": "Bahrain International Circuit",
-                "country": "Bahréin",
-                "audio": "/static/sounds/bahrain.mp3",
-                "img": "https://media.formula1.com/image/upload/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Bahrain_Circuit.png",
-            },
-            # Nota: Monza ya debería estar en tu base de datos si ejecutaste seed.py
         ]
 
-        print("🏎️  Ampliando la parrilla a 10 circuitos...")
-
         count = 0
-        for c in circuitos_nuevos:
-            # Comprobamos si ya existe por nombre para no duplicar
-            existe = Circuit.query.filter_by(name=c["name"]).first()
-
-            if not existe:
-                nuevo = Circuit(
-                    name=c["name"],
-                    country=c["country"],
-                    audio_path=c["audio"],
-                    image_path=c["img"],
-                )
-                db.session.add(nuevo)
-                print(f"✅ Añadido: {c['name']}")
-                count += 1
-            else:
-                print(f"ℹ️  Ya existe: {c['name']}")
+        for item in datos:
+            nuevo = Circuit(
+                name=item["name"],
+                country=item["country"],
+                image=item["image"],
+                audio=f"sounds/{item['audio']}",  # Ruta relativa para Flask
+            )
+            db.session.add(nuevo)
+            count += 1
+            print(f"   🎧 {item['name']} cargado.")
 
         db.session.commit()
-
-        total = Circuit.query.count()
-        print(f"\n🏁 Proceso terminado. Total de circuitos en DB: {total}")
+        print(f"✅ ¡LISTO! {count} pistas de audio cargadas.")
 
 
 if __name__ == "__main__":
-    agregar_circuitos()
+    cargar_circuitos_sonido()

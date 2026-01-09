@@ -11,7 +11,7 @@
 
     <div class="mb-3">
         <span id="timerDisplay" class="display-4 fw-bold text-danger"
-            style="text-shadow: 0 0 10px rgba(220, 53, 69, 0.8);">20</span>
+            style="text-shadow: 0 0 10px rgba(220, 53, 69, 0.8);">40</span>
         <span class="text-white small">segundos</span>
     </div>
 
@@ -34,7 +34,8 @@
                 </div>
             </div>
 
-            <audio id="audioElement" src="{{ pregunta.audio_path }}" crossorigin="anonymous"></audio>
+            <audio id="audioElement" src="{{ url_for('static', filename=pregunta.audio) }}"
+                crossorigin="anonymous"></audio>
 
             <form id="quizForm" action="{{ url_for('quiz_submit') }}" method="POST">
                 <input type="hidden" name="pregunta_id" value="{{ pregunta.id }}">
@@ -71,7 +72,7 @@
     let isInitialized = false;
 
     // VARIABLES DEL JUEGO
-    let timeLeft = 40; // 20 segundos
+    let timeLeft = 40; // 40 segundos
     let timerInterval = null;
     let gameStarted = false;
 
@@ -87,23 +88,20 @@
 
     // --- LÓGICA DEL TEMPORIZADOR ---
     function startTimer() {
-        if (gameStarted) return; // Si ya empezó, no hacemos nada
+        if (gameStarted) return;
         gameStarted = true;
 
         timerInterval = setInterval(() => {
             timeLeft--;
             timerDisplay.innerText = timeLeft;
 
-            // Cambiar color si queda poco tiempo
             if (timeLeft <= 5) {
-                timerDisplay.classList.add('text-warning'); // Amarillo si < 5s
+                timerDisplay.classList.add('text-warning');
             }
 
-            // TIEMPO AGOTADO
             if (timeLeft <= 0) {
                 clearInterval(timerInterval);
                 audio.pause();
-                // Enviamos el formulario automáticamente
                 quizForm.submit();
             }
         }, 1000);
@@ -111,7 +109,6 @@
 
     // --- LÓGICA PLAY / PAUSE ---
     btnPlay.addEventListener('click', () => {
-        // 1. Iniciar AudioContext (necesario primera vez)
         if (!isInitialized) {
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             analyser = audioCtx.createAnalyser();
@@ -122,46 +119,37 @@
             analyser.smoothingTimeConstant = 0.85;
             isInitialized = true;
             draw();
-
-            // ARRANCAR EL TEMPORIZADOR (Solo la primera vez)
-            startTimer();
+            startTimer(); // El tiempo empieza al dar Play
         }
 
         if (audioCtx.state === 'suspended') {
             audioCtx.resume();
         }
 
-        // 2. Alternar entre Play y Pause
         if (audio.paused) {
             audio.play();
             playIcon.classList.remove('bi-play-fill');
             playIcon.classList.add('bi-pause-fill');
-            playIcon.style.marginLeft = "0"; // Ajuste visual del icono
-
-            // Hacer el overlay más transparente para ver mejor
+            playIcon.style.marginLeft = "0";
             playOverlay.style.background = 'rgba(0,0,0,0.1)';
         } else {
             audio.pause();
             playIcon.classList.remove('bi-pause-fill');
             playIcon.classList.add('bi-play-fill');
-            playIcon.style.marginLeft = "5px"; // Ajuste visual del icono
-
-            // Oscurecer un poco al pausar
+            playIcon.style.marginLeft = "5px";
             playOverlay.style.background = 'rgba(0,0,0,0.4)';
         }
     });
 
-    // --- VISUALIZADOR (Código anterior mejorado) ---
+    // --- VISUALIZADOR ---
     function draw() {
         requestAnimationFrame(draw);
-
         const bufferLength = analyser.frequencyBinCount;
         const dataArray = new Uint8Array(bufferLength);
         analyser.getByteFrequencyData(dataArray);
 
         const width = canvas.offsetWidth;
         const height = canvas.offsetHeight;
-
         canvasCtx.clearRect(0, 0, width, height);
 
         const totalSpacing = width * 0.2;
@@ -171,7 +159,6 @@
         const spacing = totalSpacing / effectiveBars;
 
         let x = spacing / 2;
-
         canvasCtx.lineWidth = barWidth;
         canvasCtx.lineCap = 'round';
         canvasCtx.strokeStyle = 'rgb(255, 40, 40)';
@@ -179,11 +166,8 @@
         canvasCtx.shadowColor = 'rgba(255, 0, 0, 0.8)';
 
         canvasCtx.beginPath();
-
         for (let i = 0; i < effectiveBars; i++) {
             let barHeight = (dataArray[i] / 255) * height * 0.9;
-            // Si el audio está pausado, dataArray devolverá 0 o valores fijos bajos
-            // Mantenemos un puntito mínimo para que no desaparezca todo
             barHeight = Math.max(barWidth, barHeight);
 
             const xCenter = x + barWidth / 2;
@@ -201,13 +185,11 @@
 </script>
 
 <style>
-    /* Efecto hover */
     #btnPlay:hover {
         transform: scale(1.1);
         box-shadow: 0 0 30px #dc3545 !important;
     }
 
-    /* Animación del timer cuando queda poco tiempo */
     .text-warning {
         animation: pulse 1s infinite;
     }

@@ -77,9 +77,8 @@ class Sound(db.Model):
 
 # Tabla de Circuitos para el Quiz (Requisito PDF Sección 11)
 class Circuit(db.Model):
-    __tablename__ = "circuits"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    country = db.Column(db.String(50))
-    image_path = db.Column(db.String(255))
-    audio_path = db.Column(db.String(255))
+    country = db.Column(db.String(100))
+    image = db.Column(db.String(200))  # O image_url, usa el que ya tengas
+    audio = db.Column(db.String(200))  # <--- ¡AÑADE ESTA LÍNEA!
