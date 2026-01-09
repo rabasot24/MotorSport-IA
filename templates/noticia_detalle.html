@@ -1,39 +1,41 @@
 {% extends "base.html" %}
 
-{% block title %}{{ noticia.title }} - MotorSport{% endblock %}
+{% block title %}{{ noticia.title }}{% endblock %}
 
 {% block content %}
 <div class="container py-5">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ url_for('home') }}" class="text-danger">Inicio</a></li>
-            <li class="breadcrumb-item"><a href="{{ url_for('noticias') }}" class="text-danger">Noticias</a></li>
-            <li class="breadcrumb-item active text-white" aria-current="page">{{ noticia.title }}</li>
-        </ol>
-    </nav>
+    <a href="{{ url_for('noticias') }}" class="btn btn-outline-secondary mb-4">
+        <i class="bi bi-arrow-left"></i> Volver a Noticias
+    </a>
 
     <div class="row justify-content-center">
-        <div class="col-lg-10">
-            <img src="{{ noticia.image }}" class="w-100 rounded mb-4" alt="{{ noticia.title }}"
-                style="max-height: 500px; object-fit: cover;">
-
-            <div class="d-flex align-items-center text-muted mb-4">
-                <span class="me-3"><i class="bi bi-calendar"></i> {{ noticia.date.strftime('%d-%m-%Y') if noticia.date
-                    else 'Hoy' }}</span>
-                <span class="badge bg-danger me-3">{{ noticia.category_rel.name if noticia.category_rel else 'General'
-                    }}</span>
+        <div class="col-lg-8">
+            <div class="mb-4">
+                <span class="badge bg-danger mb-2">{{ noticia.category_rel.name }}</span>
+                <h1 class="fw-bold text-white mb-3">{{ noticia.title }}</h1>
+                <div class="d-flex align-items-center text-muted">
+                    <i class="bi bi-person-circle me-2"></i> <span>Redacción MotorSport</span>
+                    <span class="mx-3">•</span>
+                    <i class="bi bi-calendar3 me-2"></i> <span>{{ noticia.date.strftime('%d de %B, %Y') }}</span>
+                </div>
             </div>
 
-            <h1 class="display-4 fw-bold text-white mb-4">{{ noticia.title }}</h1>
-
-            <div class="lead text-white-50" style="line-height: 1.8;">
-                {{ noticia.content }}
+            <div class="card border-0 mb-5 shadow-lg">
+                <img src="https://wsrv.nl/?url={{ noticia.image | replace('https://', '') }}&w=1200&output=jpg"
+                    class="img-fluid rounded" alt="{{ noticia.title }}">
             </div>
 
-            <div class="mt-5 border-top border-secondary pt-4">
-                <a href="{{ url_for('noticias') }}" class="btn btn-outline-light">
-                    <i class="bi bi-arrow-left"></i> Volver a Noticias
-                </a>
+            <div class="article-content text-light"
+                style="font-size: 1.15rem; line-height: 1.8; white-space: pre-line;">
+                {{ noticia.content | safe }}
+            </div>
+
+            <div class="mt-5 pt-4 border-top border-secondary">
+                <h4 class="text-warning mb-3">Comentarios</h4>
+                <div class="alert alert-dark border-secondary">
+                    <i class="bi bi-chat-square-text me-2"></i>
+                    Inicia sesión para participar en el debate.
+                </div>
             </div>
         </div>
     </div>

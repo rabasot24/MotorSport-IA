@@ -36,7 +36,8 @@ def home():
 
 @app.route("/noticias")
 def noticias():
-    noticias = Article.query.all()
+    # AÑADIMOS: .order_by(Article.date.desc())
+    noticias = Article.query.order_by(Article.date.desc()).all()
     return render_template("noticias.html", noticias=noticias)
 
 
