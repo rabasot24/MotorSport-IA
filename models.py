@@ -44,6 +44,7 @@ class Article(db.Model):
 
 
 # Tabla de Vehículos (Requisito PDF Sección 5)
+# Tabla de Vehículos (ACTUALIZADA PARA FICHA TÉCNICA)
 class Vehicle(db.Model):
     __tablename__ = "vehicles"
     id = db.Column(db.Integer, primary_key=True)
@@ -52,8 +53,16 @@ class Vehicle(db.Model):
     year = db.Column(db.Integer)
     category = db.Column(db.String(50))
     description = db.Column(db.Text)
-    specs = db.Column(db.JSON)  # Especificaciones técnicas
     image = db.Column(db.String(255))
+
+    # --- NUEVAS COLUMNAS TÉCNICAS ---
+    # En vez de un JSON genérico, usamos columnas reales para poder ordenar y mostrar mejor
+    engine = db.Column(db.String(100))  # Ej: V12 6.5L
+    horsepower = db.Column(db.Integer)  # Ej: 800
+    top_speed = db.Column(db.Integer)  # Ej: 350
+    acceleration = db.Column(db.Float)  # Ej: 2.8
+    weight = db.Column(db.Integer)  # Ej: 1250
+
     sounds = db.relationship("Sound", backref="vehicle", lazy=True)
 
 

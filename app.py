@@ -48,7 +48,7 @@ def noticia_detalle(id):
 
 @app.route("/vehiculos")
 def vehiculos():
-    vehiculos = Vehicle.query.all()
+    vehiculos = Vehicle.query.order_by(Vehicle.category).all()
     return render_template("vehiculos.html", vehiculos=vehiculos)
 
 
