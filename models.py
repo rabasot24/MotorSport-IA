@@ -14,7 +14,7 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(255), nullable=False)
     role = db.Column(db.Enum("user", "editor", "admin"), default="user")
     settings = db.Column(db.JSON, nullable=True)  # Para preferencias del perfil
-
+    score = db.Column(db.Integer, default=0)
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 

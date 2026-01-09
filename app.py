@@ -212,9 +212,25 @@ def quiz_submit():
 
 @app.route("/quiz/final")
 def quiz_final():
-    score = session.get("quiz_score", 0)
-    total = session.get("total_rounds", 10)
-    session.pop("quiz_indices", None)
+    score = session.get("score", 0)
+    total = session.get("total", 0)
+
+    # --- LÓGICA DE GAMIFICACIÓN ---
+    # Si el usuario está registrado, guardamos sus puntos
+    if current_user.is_authenticated:
+        # Sumamos los puntos de esta partida a su total histórico
+        current_user.score += score
+        db.session.commit()
+        print(
+            f"💰 Puntos guardados! El usuario {current_user.username} ahora tiene {current_user.score} puntos."
+        )
+    # -----------------------------
+
+    # Limpiamos la sesión para la próxima vez
+    session.pop("quiz_questions", None)
+    session.pop("current_question", None)
+    session.pop("score", None)
+    session.pop("ronda", None)
 
     return render_template("quiz_final.html", score=score, total=total * 10)
 

@@ -13,16 +13,36 @@
             <p class="lead text-muted">de {{ total }} puntos posibles</p>
 
             <div class="progress mb-4 bg-secondary" style="height: 20px;">
-                <div class="progress-bar bg-warning" role="progressbar" style="width: {{ (score/total)*100 }}%"></div>
+                <div class="progress-bar bg-warning" role="progressbar"
+                    style="width: {% if total > 0 %}{{ (score/total)*100 }}{% else %}0{% endif %}%">
+                </div>
             </div>
 
-            {% if score == total %}
-            <div class="alert alert-success">¡INCREÍBLE! Eres un experto en circuitos. 🏎️💨</div>
-            {% elif score >= total/2 %}
-            <div class="alert alert-info">¡Buen trabajo! Tienes buen oído. 👍</div>
-            {% else %}
-            <div class="alert alert-danger">Necesitas ver más carreras... 😅</div>
+            {% set porcentaje = 0 %}
+            {% if total > 0 %}
+            {% set porcentaje = (score / total) * 100 %}
             {% endif %}
+
+            <div class="mt-4">
+                {% if porcentaje >= 80 %}
+                <div class="alert alert-success border-0 shadow-sm py-3">
+                    <h4 class="alert-heading fw-bold"><i class="bi bi-trophy-fill"></i> ¡LEYENDA DEL MOTOR!</h4>
+                    <p class="mb-0">Tienes gasolina en las venas. Eres un experto absoluto. 🏎️🔥</p>
+                </div>
+
+                {% elif porcentaje >= 50 %}
+                <div class="alert alert-warning border-0 shadow-sm py-3 text-dark">
+                    <h4 class="alert-heading fw-bold"><i class="bi bi-flag-fill"></i> ¡Bien jugado!</h4>
+                    <p class="mb-0">No está mal, pero necesitas dar unas cuantas vueltas más para la Pole. 🤔🏁</p>
+                </div>
+
+                {% else %}
+                <div class="alert alert-danger border-0 shadow-sm py-3">
+                    <h4 class="alert-heading fw-bold"><i class="bi bi-cone-striped"></i> ¡Accidente en la curva 1!</h4>
+                    <p class="mb-0">Necesitas estudiar más los circuitos. ¡Vuelve a intentarlo! 🚑🚧</p>
+                </div>
+                {% endif %}
+            </div>
 
             <div class="d-grid gap-2 mt-4">
                 <a href="{{ url_for('quiz') }}" class="btn btn-outline-light">Jugar Otra Vez</a>
