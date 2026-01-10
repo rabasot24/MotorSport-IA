@@ -171,8 +171,13 @@
                         {% for coche in vehiculos %}
                         <tr>
                             <td style="width: 80px;">
-                                <img src="{{ coche.image_url or coche.image }}" alt=""
+                                {% if 'http' in (coche.image or '') %}
+                                <img src="{{ coche.image }}" alt=""
                                     style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;">
+                                {% else %}
+                                <img src="{{ url_for('static', filename=coche.image) }}" alt=""
+                                    style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;">
+                                {% endif %}
                             </td>
                             <td>{{ coche.name }}</td>
                             <td>{{ coche.manufacturer }}</td>

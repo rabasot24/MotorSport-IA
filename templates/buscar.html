@@ -26,13 +26,19 @@
         <div class="col-md-4">
             <div class="card h-100 bg-black border-secondary text-white shadow-sm hover-card">
                 <div class="ratio ratio-16x9 overflow-hidden">
+                    {% if 'http' in (articulo.image or '') %}
                     <img src="{{ articulo.image }}" class="card-img-top object-fit-cover transition-img"
                         alt="{{ articulo.title }}" loading="lazy">
+                    {% else %}
+                    <img src="{{ url_for('static', filename=articulo.image) }}"
+                        class="card-img-top object-fit-cover transition-img" alt="{{ articulo.title }}" loading="lazy">
+                    {% endif %}
                 </div>
                 <div class="card-body d-flex flex-column p-4">
                     <div class="mb-3">
                         <span class="badge bg-danger rounded-pill px-3">Noticia</span>
-                        <small class="text-muted ms-2">{{ articulo.date.strftime('%d %b') }}</small>
+                        <small class="text-muted ms-2">{{ articulo.date.strftime('%d %b') if articulo.date else ''
+                            }}</small>
                     </div>
                     <h4 class="card-title fw-bold mb-3 h5">{{ articulo.title }}</h4>
                     <a href="{{ url_for('noticia_detalle', id=articulo.id) }}"
@@ -55,8 +61,13 @@
         <div class="col-md-3 col-sm-6">
             <div class="card h-100 bg-dark text-white border-0 shadow-sm hover-card position-relative overflow-hidden">
                 <div class="ratio ratio-4x3">
-                    <img src="{{ coche.image_url }}" class="card-img-top object-fit-cover transition-img"
+                    {% if 'http' in (coche.image or '') %}
+                    <img src="{{ coche.image }}" class="card-img-top object-fit-cover transition-img"
                         alt="{{ coche.name }}" loading="lazy">
+                    {% else %}
+                    <img src="{{ url_for('static', filename=coche.image) }}"
+                        class="card-img-top object-fit-cover transition-img" alt="{{ coche.name }}" loading="lazy">
+                    {% endif %}
                 </div>
                 <div class="card-body text-center position-relative z-1">
                     <h5 class="card-title fw-bold mb-1">{{ coche.name }}</h5>

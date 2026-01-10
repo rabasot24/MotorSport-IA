@@ -1,3 +1,4 @@
+import requests
 from flask_wtf.csrf import CSRFProtect
 from flask import Flask, render_template, redirect, url_for, request, flash, session
 from flask_login import (
@@ -8,7 +9,7 @@ from flask_login import (
     current_user,
 )
 from config import Config
-from models import db, User, Vehicle, Article, Circuit, Category
+from models import db, User, Vehicle, Article, Circuit, Category, Comment
 import random
 from sqlalchemy.sql.expression import func
 from sqlalchemy import or_
@@ -89,6 +90,27 @@ def buscar():
 def noticia_detalle(id):
     noticia = Article.query.get_or_404(id)
     return render_template("noticia_detalle.html", noticia=noticia)
+
+
+@app.route("/noticia/<int:id>/comentar", methods=["POST"])
+@login_required
+def publicar_comentario(id):
+    contenido = request.form.get("comentario")
+
+    if not contenido:
+        flash("El comentario no puede estar vacío.")
+        return redirect(url_for("noticia_detalle", id=id))
+
+    # Crear nuevo comentario
+    nuevo_comentario = Comment(
+        content=contenido, user_id=current_user.id, article_id=id
+    )
+
+    db.session.add(nuevo_comentario)
+    db.session.commit()
+
+    flash("¡Comentario publicado!")
+    return redirect(url_for("noticia_detalle", id=id))
 
 
 @app.route("/vehiculos")
@@ -378,21 +400,39 @@ def crear_vehiculo():
     if current_user.role != "admin":
         return redirect(url_for("home"))
 
-    # Recogemos los datos básicos y técnicos
+    nombre = request.form.get("nombre")
+    fabricante = request.form.get("fabricante")
+
+    # 1. Gestión de imagen (automática o manual)
+    imagen_url = request.form.get("imagen")
+    if not imagen_url:
+        # Importante: asegúrate de tener 'import requests' arriba del todo
+        try:
+            imagen_url = obtener_imagen_wikipedia(f"{fabricante} {nombre}")
+        except:
+            imagen_url = None
+
+    # 2. LIMPIEZA DE DATOS NUMÉRICOS (Aquí estaba el error)
+    # Si el campo viene vacío (""), lo convertimos a None. Si no, a int/float.
+    hp_input = request.form.get("cv")
+    speed_input = request.form.get("velocidad")
+    accel_input = request.form.get("aceleracion")
+
     nuevo_coche = Vehicle(
-        name=request.form.get("nombre"),
-        manufacturer=request.form.get("fabricante"),
+        name=nombre,
+        manufacturer=fabricante,
         category=request.form.get("categoria"),
-        image=request.form.get("imagen"),
+        image=imagen_url,
         engine=request.form.get("motor"),
-        horsepower=request.form.get("cv"),
-        top_speed=request.form.get("velocidad"),
-        acceleration=request.form.get("aceleracion"),
+        # Conversión segura:
+        horsepower=int(hp_input) if hp_input else None,
+        top_speed=int(speed_input) if speed_input else None,
+        acceleration=float(accel_input) if accel_input else None,
     )
 
     db.session.add(nuevo_coche)
     db.session.commit()
-    flash("Vehículo añadido al garaje correctamente.")
+    flash("Vehículo añadido correctamente.")
     return redirect(url_for("admin_panel"))
 
 

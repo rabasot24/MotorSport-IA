@@ -18,7 +18,7 @@
             Pura <span class="text-danger">Adrenalina</span>
         </h1>
         <p class="lead fs-4 mb-5 text-light opacity-75">
-            El portal definitivo para los amantes de la F1, MotoGP y WEC.
+            El portal definitivo para los amantes de la F1, Rally y WEC.
         </p>
         <div class="d-flex gap-3 justify-content-center">
             <a href="{{ url_for('noticias') }}"
@@ -64,7 +64,7 @@
                         </div>
                         <h4 class="card-title fw-bold mb-3 h5">{{ articulo.title }}</h4>
                         <p class="card-text text-secondary small flex-grow-1">{{ articulo.content[:100] }}...</p>
-                        <a href="{{ articulo.url }}" target="_blank"
+                        <a href="{{ url_for('noticia_detalle', id=articulo.id) }}"
                             class="text-danger text-decoration-none fw-bold mt-3">
                             Leer más <i class="bi bi-arrow-right"></i>
                         </a>
@@ -83,7 +83,7 @@
             <div class="col-md-8">
                 <h6 class="text-warning fw-bold text-uppercase mb-2">Showroom</h6>
                 <h2 class="display-5 fw-bold text-white">Máquinas de Leyenda</h2>
-                <p class="text-muted lead">Descubre las especificaciones técnicas y el sonido de las bestias más rápidas
+                <p class="text-light lead">Descubre las especificaciones técnicas y el sonido de las bestias más rápidas
                     del planeta.</p>
             </div>
             <div class="col-md-4 text-md-end">
@@ -101,8 +101,8 @@
                     class="card h-100 bg-dark text-white border-0 shadow-sm hover-card position-relative overflow-hidden">
 
                     <div class="ratio ratio-4x3">
-                        <img src="{{ coche.image_url }}" class="card-img-top object-fit-cover transition-img"
-                            alt="{{ coche.name }}" loading="lazy">
+                        <img src="{{ url_for('static', filename=coche.image) }}"
+                            class="card-img-top object-fit-cover transition-img" alt="{{ coche.name }}" loading="lazy">
                     </div>
 
                     <div class="card-body text-center position-relative z-1">

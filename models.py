@@ -1,11 +1,12 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
 
 db = SQLAlchemy()
 
 
-# Tabla de Usuarios (Requisito PDF Sección 5)
+# Tabla de Usuarios
 class User(UserMixin, db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
@@ -13,8 +14,12 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
     role = db.Column(db.Enum("user", "editor", "admin"), default="user")
-    settings = db.Column(db.JSON, nullable=True)  # Para preferencias del perfil
+    settings = db.Column(db.JSON, nullable=True)
     score = db.Column(db.Integer, default=0)
+
+    # RELACIÓN: Un usuario tiene muchos comentarios
+    comments = db.relationship("Comment", backref="author_rel", lazy=True)
+
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
@@ -22,7 +27,7 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
 
-# Tabla de Categorías (Requisito PDF Sección 5)
+# Tabla de Categorías
 class Category(db.Model):
     __tablename__ = "categories"
     id = db.Column(db.Integer, primary_key=True)
@@ -31,20 +36,24 @@ class Category(db.Model):
     articles = db.relationship("Article", backref="category_rel", lazy=True)
 
 
-# Tabla de Artículos/Noticias (Requisito PDF Sección 5)
+# Tabla de Artículos/Noticias
 class Article(db.Model):
     __tablename__ = "articles"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(255), nullable=False)
     content = db.Column(db.Text, nullable=False)
-    image = db.Column(db.String(255))  # Para tus fotos actuales
-    date = db.Column(db.DateTime, server_default=db.func.now())
+    image = db.Column(db.String(255))
+    date = db.Column(db.DateTime, default=datetime.utcnow)
     author_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     category_id = db.Column(db.Integer, db.ForeignKey("categories.id"))
 
+    # --- ESTA LÍNEA ES LA QUE FALTA PARA QUE SE VEAN ---
+    comments = db.relationship(
+        "Comment", backref="article_rel", lazy=True, cascade="all, delete-orphan"
+    )
 
-# Tabla de Vehículos (Requisito PDF Sección 5)
-# Tabla de Vehículos (ACTUALIZADA PARA FICHA TÉCNICA)
+
+# Tabla de Vehículos
 class Vehicle(db.Model):
     __tablename__ = "vehicles"
     id = db.Column(db.Integer, primary_key=True)
@@ -54,19 +63,15 @@ class Vehicle(db.Model):
     category = db.Column(db.String(50))
     description = db.Column(db.Text)
     image = db.Column(db.String(255))
-
-    # --- NUEVAS COLUMNAS TÉCNICAS ---
-    # En vez de un JSON genérico, usamos columnas reales para poder ordenar y mostrar mejor
-    engine = db.Column(db.String(100))  # Ej: V12 6.5L
-    horsepower = db.Column(db.Integer)  # Ej: 800
-    top_speed = db.Column(db.Integer)  # Ej: 350
-    acceleration = db.Column(db.Float)  # Ej: 2.8
-    weight = db.Column(db.Integer)  # Ej: 1250
-
+    engine = db.Column(db.String(100))
+    horsepower = db.Column(db.Integer)
+    top_speed = db.Column(db.Integer)
+    acceleration = db.Column(db.Float)
+    weight = db.Column(db.Integer)
     sounds = db.relationship("Sound", backref="vehicle", lazy=True)
 
 
-# Tabla de Sonidos (Requisito PDF Sección 5)
+# Tabla de Sonidos
 class Sound(db.Model):
     __tablename__ = "sounds"
     id = db.Column(db.Integer, primary_key=True)
@@ -75,10 +80,21 @@ class Sound(db.Model):
     audio_path = db.Column(db.String(255))
 
 
-# Tabla de Circuitos para el Quiz (Requisito PDF Sección 11)
+# Tabla de Circuitos
 class Circuit(db.Model):
+    __tablename__ = "circuit"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     country = db.Column(db.String(100))
-    image = db.Column(db.String(200))  # O image_url, usa el que ya tengas
-    audio = db.Column(db.String(200))  # <--- ¡AÑADE ESTA LÍNEA!
+    image = db.Column(db.String(200))
+    audio = db.Column(db.String(200))
+
+
+# Tabla de Comentarios
+class Comment(db.Model):
+    __tablename__ = "comments"
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.Text, nullable=False)
+    date = db.Column(db.DateTime, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    article_id = db.Column(db.Integer, db.ForeignKey("articles.id"), nullable=False)
