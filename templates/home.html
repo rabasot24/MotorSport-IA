@@ -3,172 +3,259 @@
 {% block title %}Inicio - MotorSport{% endblock %}
 
 {% block content %}
+<header class="position-relative vh-100 d-flex align-items-center justify-content-center overflow-hidden bg-black">
 
-<div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-black text-white rounded shadow-lg"
-    style="min-height: 600px; display: flex; align-items: center; justify-content: center;">
+    <video id="heroVideo" autoplay muted playsinline
+        class="position-absolute w-100 h-100 object-fit-cover transition-video"
+        poster="{{ url_for('static', filename='images/poster_home.jpg') }}"
+        style="z-index: 0; filter: brightness(0.4);">
+        <source src="{{ url_for('static', filename='videos/f1_1.mp4') }}" type="video/mp4">
+    </video>
 
-    <div class="video-background-container position-absolute top-0 start-0 w-100 h-100" style="z-index: 0;">
-        <div class="position-absolute top-0 start-0 w-100 h-100" style="background: rgba(0,0,0,0.5); z-index: 2;"></div>
-
-        <video class="bg-video position-absolute top-0 start-0 w-100 h-100 active" autoplay muted loop playsinline
-            style="object-fit: cover;">
-            <source src="{{ url_for('static', filename='videos/f1_1.mp4') }}" type="video/mp4">
-        </video>
-
-        <video class="bg-video position-absolute top-0 start-0 w-100 h-100" autoplay muted loop playsinline
-            style="object-fit: cover; opacity: 0;">
-            <source src="{{ url_for('static', filename='videos/f1_2.mp4') }}" type="video/mp4">
-        </video>
-
-        <video class="bg-video position-absolute top-0 start-0 w-100 h-100" autoplay muted loop playsinline
-            style="object-fit: cover; opacity: 0;">
-            <source src="{{ url_for('static', filename='videos/rally_1.mp4') }}" type="video/mp4">
-        </video>
-
-        <video class="bg-video position-absolute top-0 start-0 w-100 h-100" autoplay muted loop playsinline
-            style="object-fit: cover; opacity: 0;">
-            <source src="{{ url_for('static', filename='videos/rally_2.mp4') }}" type="video/mp4">
-        </video>
-
-        <video class="bg-video position-absolute top-0 start-0 w-100 h-100" autoplay muted loop playsinline
-            style="object-fit: cover; opacity: 0;">
-            <source src="{{ url_for('static', filename='videos/supercar_1.mp4') }}" type="video/mp4">
-        </video>
-
-        <video class="bg-video position-absolute top-0 start-0 w-100 h-100" autoplay muted loop playsinline
-            style="object-fit: cover; opacity: 0;">
-            <source src="{{ url_for('static', filename='videos/supercar_2.mp4') }}" type="video/mp4">
-        </video>
-    </div>
-
-    <div class="col-md-8 p-lg-5 mx-auto position-relative" style="z-index: 3;">
-        <h1 class="display-2 fw-bold mb-3 text-uppercase" style="text-shadow: 2px 2px 10px rgba(0,0,0,0.8);">
-            Vive la Pasión por el Motor
+    <div class="container text-center text-white position-relative" style="z-index: 2;">
+        <h1 class="display-1 fw-bold text-uppercase mb-3"
+            style="letter-spacing: 5px; text-shadow: 0 5px 15px rgba(0,0,0,0.8);">
+            Pura <span class="text-danger">Adrenalina</span>
         </h1>
-        <p class="lead fw-normal mb-4 text-light" style="text-shadow: 1px 1px 5px rgba(0,0,0,0.8);">
-            Descubre las leyendas de la F1, Rally y Supercars. <br>
-            Mantente al día con las últimas noticias y pon a prueba tus conocimientos.
+        <p class="lead fs-4 mb-5 text-light opacity-75">
+            El portal definitivo para los amantes de la F1, MotoGP y WEC.
         </p>
-        <div class="d-flex gap-3 justify-content-center lead fw-normal">
-            <a class="btn btn-danger btn-lg px-4 fw-bold shadow-sm" href="{{ url_for('quiz') }}">
-                <i class="bi bi-controller"></i> Jugar al Quiz
+        <div class="d-flex gap-3 justify-content-center">
+            <a href="{{ url_for('noticias') }}"
+                class="btn btn-danger btn-lg px-5 py-3 rounded-pill fw-bold shadow-lg hover-scale">
+                Últimas Noticias
             </a>
-            <a class="btn btn-outline-light btn-lg px-4 shadow-sm" href="{{ url_for('vehiculos') }}">
-                <i class="bi bi-car-front-fill"></i> Ver Garaje
+            <a href="{{ url_for('quiz') }}"
+                class="btn btn-outline-light btn-lg px-5 py-3 rounded-pill fw-bold hover-scale">
+                Jugar Quiz
             </a>
         </div>
     </div>
-</div>
 
-<div class="container py-5">
-
-    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary pb-2">
-        <h2 class="text-white fw-bold"><i class="bi bi-newspaper text-danger"></i> Actualidad</h2>
-        <a href="{{ url_for('noticias') }}" class="text-decoration-none text-warning">Ver todas <i
-                class="bi bi-arrow-right"></i></a>
+    <div class="position-absolute bottom-0 start-50 translate-middle-x mb-4 text-white opacity-50 animate-bounce"
+        style="z-index: 2;">
+        <i class="bi bi-chevron-down fs-1"></i>
     </div>
+</header>
 
-    <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
-        {% for noticia in noticias %}
-        <div class="col">
-            <div class="card h-100 bg-dark text-white border-secondary shadow-sm hover-scale">
-                <div style="height: 180px; overflow: hidden;">
-                    <img src="https://wsrv.nl/?url={{ noticia.image | replace('https://', '') }}&w=400&h=250&fit=cover"
-                        class="card-img-top w-100 h-100" style="object-fit: cover;" alt="{{ noticia.title }}">
-                </div>
-                <div class="card-body">
-                    <span class="badge bg-danger mb-2">{{ noticia.category_rel.name }}</span>
-                    <h5 class="card-title fs-6 fw-bold">
-                        <a href="{{ url_for('noticia_detalle', id=noticia.id) }}"
-                            class="text-white text-decoration-none stretched-link">
-                            {{ noticia.title }}
+<section class="py-5 bg-dark position-relative" style="z-index: 1;">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-end mb-5">
+            <div>
+                <h6 class="text-danger fw-bold text-uppercase mb-2">Actualidad</h6>
+                <h2 class="display-5 fw-bold text-white">Últimas Novedades</h2>
+            </div>
+            <a href="{{ url_for('noticias') }}" class="btn btn-outline-light rounded-pill px-4">Ver todo</a>
+        </div>
+
+        <div class="row g-4">
+            {% for articulo in noticias[:3] %}
+            <div class="col-md-4">
+                <div class="card h-100 bg-black border-secondary text-white shadow-sm hover-card">
+                    <div class="ratio ratio-16x9 overflow-hidden">
+                        <img src="{{ articulo.image }}" class="card-img-top object-fit-cover transition-img"
+                            alt="{{ articulo.title }}" loading="lazy">
+                    </div>
+                    <div class="card-body d-flex flex-column p-4">
+                        <div class="mb-3">
+                            <span class="badge bg-danger rounded-pill px-3">{{ articulo.category_rel.name if
+                                articulo.category_rel else 'Motor' }}</span>
+                            <small class="text-muted ms-2">{{ articulo.date.strftime('%d %b') }}</small>
+                        </div>
+                        <h4 class="card-title fw-bold mb-3 h5">{{ articulo.title }}</h4>
+                        <p class="card-text text-secondary small flex-grow-1">{{ articulo.content[:100] }}...</p>
+                        <a href="{{ articulo.url }}" target="_blank"
+                            class="text-danger text-decoration-none fw-bold mt-3">
+                            Leer más <i class="bi bi-arrow-right"></i>
                         </a>
-                    </h5>
-                    <small class="text-muted"><i class="bi bi-clock"></i> {{ noticia.date.strftime('%d/%m') }}</small>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-black border-top border-secondary">
+    <div class="container">
+
+        <div class="row align-items-center mb-5">
+            <div class="col-md-8">
+                <h6 class="text-warning fw-bold text-uppercase mb-2">Showroom</h6>
+                <h2 class="display-5 fw-bold text-white">Máquinas de Leyenda</h2>
+                <p class="text-muted lead">Descubre las especificaciones técnicas y el sonido de las bestias más rápidas
+                    del planeta.</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <a href="{{ url_for('vehiculos') }}"
+                    class="btn btn-outline-warning rounded-pill px-4 py-2 fw-bold hover-scale">
+                    <i class="bi bi-grid-fill"></i> Explorar Garaje
+                </a>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            {% for coche in coches %}
+            <div class="col-md-3 col-sm-6">
+                <div
+                    class="card h-100 bg-dark text-white border-0 shadow-sm hover-card position-relative overflow-hidden">
+
+                    <div class="ratio ratio-4x3">
+                        <img src="{{ coche.image_url }}" class="card-img-top object-fit-cover transition-img"
+                            alt="{{ coche.name }}" loading="lazy">
+                    </div>
+
+                    <div class="card-body text-center position-relative z-1">
+                        <h5 class="card-title fw-bold mb-1">{{ coche.name }}</h5>
+                        <p class="text-warning small mb-3">{{ coche.team }}</p>
+
+                        <a href="{{ url_for('vehiculo_detalle', id=coche.id) }}"
+                            class="btn btn-sm btn-danger w-100 stretched-link">
+                            Ver Ficha Técnica
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-5 d-md-none">
+            <a href="{{ url_for('vehiculos') }}" class="btn btn-warning w-100 py-3 fw-bold">
+                Ver Todos los Vehículos
+            </a>
+        </div>
+    </div>
+</section>
+
+{% if not current_user.is_authenticated %}
+<section class="py-5 position-relative bg-dark border-top border-secondary overflow-hidden">
+    <div class="position-absolute top-0 start-0 w-100 h-100"
+        style="background: radial-gradient(circle at center, rgba(220, 53, 69, 0.15) 0%, rgba(0,0,0,0) 70%); pointer-events: none;">
+    </div>
+
+    <div class="container position-relative z-1">
+        <div class="card bg-black border-secondary mx-auto shadow-lg" style="max-width: 900px; border-radius: 20px;">
+            <div class="card-body p-5 text-center">
+                <h2 class="display-6 fw-bold text-white mb-3">¿Te vas a quedar en el Paddock? 🏁</h2>
+                <p class="lead text-secondary mb-4">
+                    Únete a la comunidad oficial de MotorSport.
+                    <strong class="text-white">Guarda tus puntos del Quiz</strong>, aparece en el Ranking Mundial y
+                    desbloquea contenido exclusivo.
+                </p>
+
+                <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
+                    <a href="{{ url_for('login') }}"
+                        class="btn btn-danger btn-lg px-5 rounded-pill fw-bold hover-scale">
+                        <i class="bi bi-person-plus-fill"></i> Crear Cuenta
+                    </a>
+                    <a href="{{ url_for('login') }}"
+                        class="btn btn-outline-light btn-lg px-5 rounded-pill fw-bold hover-scale">
+                        Iniciar Sesión
+                    </a>
                 </div>
             </div>
         </div>
-        {% endfor %}
     </div>
-
-    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary pb-2 mt-5">
-        <h2 class="text-white fw-bold"><i class="bi bi-trophy-fill text-warning"></i> Joyas del Garaje</h2>
-        <a href="{{ url_for('vehiculos') }}" class="text-decoration-none text-warning">Explorar Museo <i
-                class="bi bi-arrow-right"></i></a>
-    </div>
-
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-        {% for coche in vehiculos %}
-        <div class="col">
-            <div class="card h-100 bg-black text-white border-0 shadow position-relative hover-scale">
-                <img src="{{ url_for('static', filename=coche.image) }}" class="card-img w-100 h-100"
-                    style="object-fit: cover; opacity: 0.7; height: 250px !important;" alt="{{ coche.name }}">
-
-                <div class="card-img-overlay d-flex flex-column justify-content-end p-4"
-                    style="background: linear-gradient(to top, black, transparent);">
-                    <h4 class="card-title fw-bold mb-0">{{ coche.name }}</h4>
-                    <p class="card-text text-warning mb-0">{{ coche.horsepower }} CV • {{ coche.year }}</p>
-                    <a href="{{ url_for('vehiculo_detalle', id=coche.id) }}" class="stretched-link"></a>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-
-    <div class="bg-danger text-white rounded p-4 p-md-5 mt-5 text-center shadow">
-        <h3>¿Te crees un experto?</h3>
-        <p class="mb-4">Regístrate ahora para guardar tus puntuaciones en el Quiz y comentar en las noticias.</p>
-        {% if current_user.is_authenticated %}
-        <a href="{{ url_for('perfil') }}" class="btn btn-dark btn-lg">Ir a mi Perfil</a>
-        {% else %}
-        <a href="{{ url_for('login') }}" class="btn btn-light btn-lg text-danger fw-bold">Unirse Ahora</a>
-        {% endif %}
-    </div>
-
-</div>
+</section>
+{% endif %}
 
 <style>
+    /* Transición suave para el video */
+    .transition-video {
+        transition: opacity 1s ease-in-out;
+        opacity: 1;
+    }
+
+    .video-hidden {
+        opacity: 0;
+    }
+
+    /* Animaciones botones y tarjetas */
     .hover-scale {
-        transition: transform 0.3s;
+        transition: transform 0.3s ease;
     }
 
     .hover-scale:hover {
-        transform: scale(1.03);
-        z-index: 10;
+        transform: scale(1.05);
     }
 
-    /* Transición suave de opacidad */
-    .bg-video {
-        transition: opacity 1.5s ease-in-out;
+    .hover-card:hover {
+        transform: translateY(-5px);
+        border-color: #dc3545 !important;
     }
 
-    .bg-video.active {
-        opacity: 1 !important;
+    .hover-card {
+        transition: all 0.3s ease;
+    }
+
+    .transition-img {
+        transition: transform 0.5s ease;
+    }
+
+    .hover-card:hover .transition-img {
+        transform: scale(1.1);
+    }
+
+    .animate-bounce {
+        animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+
+        0%,
+        20%,
+        50%,
+        80%,
+        100% {
+            transform: translateY(0) translateX(-50%);
+        }
+
+        40% {
+            transform: translateY(-10px) translateX(-50%);
+        }
+
+        60% {
+            transform: translateY(-5px) translateX(-50%);
+        }
     }
 </style>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const videos = document.querySelectorAll('.bg-video');
-        let currentVideo = 0;
+        // 1. LISTA DE VÍDEOS
+        const playlist = [
+            "{{ url_for('static', filename='videos/f1_1.mp4') }}",
+            "{{ url_for('static', filename='videos/f1_2.mp4') }}",
+            "{{ url_for('static', filename='videos/f1_3.mp4') }}"
+        ];
 
-        // Función para cambiar de video
+        let currentIndex = 0;
+        const videoElement = document.getElementById('heroVideo');
+
+        // 2. FUNCIÓN PARA CAMBIAR VÍDEO
         function nextVideo() {
-            // Quitamos la clase 'active' al video actual (se desvanece)
-            videos[currentVideo].style.opacity = '0';
+            // A. Desvanecer (Fade Out)
+            videoElement.classList.add('video-hidden');
 
-            // Pasamos al siguiente (o volvemos al primero)
-            currentVideo = (currentVideo + 1) % videos.length;
+            setTimeout(() => {
+                // B. Cambiar fuente
+                currentIndex = (currentIndex + 1) % playlist.length;
+                videoElement.src = playlist[currentIndex];
 
-            // Ponemos la clase 'active' al nuevo video (aparece suavemente)
-            videos[currentVideo].style.opacity = '1';
+                // C. Cargar y Reproducir
+                videoElement.load();
+                videoElement.play();
+
+                // D. Reaparecer (Fade In)
+                videoElement.classList.remove('video-hidden');
+            }, 1000); // Esperamos 1 segundo (tiempo de la transición CSS)
         }
 
-        // Ejecutar cada 10.000 milisegundos (10 segundos)
-        if (videos.length > 1) {
-            setInterval(nextVideo, 10000);
-        }
+        // 3. INTERVALO: Cambiar cada 10 segundos
+        setInterval(nextVideo, 10000);
+
+        // Extra: Si termina antes, pasa al siguiente
+        videoElement.addEventListener('ended', nextVideo);
     });
 </script>
-
 {% endblock %}

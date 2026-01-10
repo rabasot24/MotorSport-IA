@@ -9,6 +9,7 @@ from flask_login import (
 from config import Config
 from models import db, User, Vehicle, Article, Circuit, Category
 import random
+from sqlalchemy.sql.expression import func  # <--- IMPORTANTE: Necesario para el random
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -29,14 +30,19 @@ def load_user(user_id):
 
 @app.route("/")
 def home():
+    # 1. Noticias: Las 3 más recientes
     noticias = Article.query.order_by(Article.date.desc()).limit(3).all()
-    vehiculos = Vehicle.query.limit(4).all()
-    return render_template("home.html", noticias=noticias, vehiculos=vehiculos)
+
+    # 2. Showroom: 4 vehículos aleatorios para la portada
+    # Usamos func.random() para que cambien cada vez que recargas
+    coches = Vehicle.query.order_by(func.random()).limit(4).all()
+
+    # Pasamos 'coches' a la plantilla (coincide con el HTML que te di antes)
+    return render_template("home.html", noticias=noticias, coches=coches)
 
 
 @app.route("/noticias")
 def noticias():
-    # AÑADIMOS: .order_by(Article.date.desc())
     noticias = Article.query.order_by(Article.date.desc()).all()
     return render_template("noticias.html", noticias=noticias)
 
@@ -130,7 +136,6 @@ def editar_perfil():
 
 @app.route("/quiz")
 def quiz():
-    # Muestra la bienvenida (Esto arregla el error de BuildError)
     return render_template("quiz_intro.html")
 
 
@@ -141,8 +146,9 @@ def quiz_start():
     ids = [c.id for c in all_circuits]
     random.shuffle(ids)
 
+    # Seleccionamos 10 preguntas
     session["quiz_indices"] = ids[:10]
-    session["quiz_score"] = 0
+    session["quiz_score"] = 0  # Empezamos en 0
     session["quiz_round"] = 1
     session["total_rounds"] = len(session["quiz_indices"])
 
@@ -151,9 +157,8 @@ def quiz_start():
 
 @app.route("/quiz/juego")
 def quiz_juego():
-    # Logica de mostrar pregunta
     if "quiz_indices" not in session:
-        return redirect(url_for("quiz"))  # Redirige a la portada si no hay sesión
+        return redirect(url_for("quiz"))
 
     if not session["quiz_indices"]:
         return redirect(url_for("quiz_final"))
@@ -164,6 +169,8 @@ def quiz_juego():
     circuitos = Circuit.query.all()
     opciones = [pregunta.name]
     otros = [c.name for c in circuitos if c.id != pregunta.id]
+
+    # Evitar error si hay pocos circuitos en la DB
     if len(otros) >= 2:
         opciones.extend(random.sample(otros, 2))
     else:
@@ -189,6 +196,8 @@ def quiz_submit():
     acierto = circuito.name == respuesta
 
     puntos_ganados = 10 if acierto else 0
+
+    # Actualizamos la puntuación en la sesión
     session["quiz_score"] += puntos_ganados
 
     indices = session["quiz_indices"]
@@ -212,27 +221,27 @@ def quiz_submit():
 
 @app.route("/quiz/final")
 def quiz_final():
-    score = session.get("score", 0)
-    total = session.get("total", 0)
+    # CORRECCIÓN: Usamos las mismas variables que definimos en quiz_start
+    score = session.get("quiz_score", 0)
+    total = (
+        session.get("total_rounds", 0) * 10
+    )  # Multiplicamos por 10 para el max score posible
 
-    # --- LÓGICA DE GAMIFICACIÓN ---
-    # Si el usuario está registrado, guardamos sus puntos
+    # --- GAMIFICACIÓN ---
     if current_user.is_authenticated:
-        # Sumamos los puntos de esta partida a su total histórico
         current_user.score += score
         db.session.commit()
         print(
-            f"💰 Puntos guardados! El usuario {current_user.username} ahora tiene {current_user.score} puntos."
+            f"💰 Puntos guardados! Usuario: {current_user.username} | Total Acumulado: {current_user.score}"
         )
-    # -----------------------------
+    # --------------------
 
-    # Limpiamos la sesión para la próxima vez
-    session.pop("quiz_questions", None)
-    session.pop("current_question", None)
-    session.pop("score", None)
-    session.pop("ronda", None)
+    # Limpieza de sesión
+    session.pop("quiz_indices", None)
+    session.pop("quiz_round", None)
+    # No borramos 'quiz_score' aún para mostrarlo en el template final
 
-    return render_template("quiz_final.html", score=score, total=total * 10)
+    return render_template("quiz_final.html", score=score, total=total)
 
 
 # --- ADMIN PANEL ---
@@ -258,7 +267,7 @@ def crear_noticia():
     titulo = request.form.get("titulo")
     contenido = request.form.get("contenido")
     imagen = request.form.get("imagen")
-    categoria = Category.query.first()
+    categoria = Category.query.first()  # Temporal, idealmente vendría del form
 
     nueva_noticia = Article(
         title=titulo,
@@ -283,6 +292,12 @@ def borrar_noticia(id):
     db.session.delete(noticia)
     db.session.commit()
     return redirect(url_for("admin_panel"))
+
+
+@app.route("/ranking")
+def ranking():
+    top_users = User.query.order_by(User.score.desc()).limit(10).all()
+    return render_template("ranking.html", users=top_users)
 
 
 if __name__ == "__main__":
