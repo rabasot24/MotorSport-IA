@@ -96,6 +96,11 @@
             font-size: 0.9rem;
             color: #666;
         }
+
+        .hover-white:hover {
+            color: #fff !important;
+            transition: color 0.3s;
+        }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
@@ -136,7 +141,15 @@
                             href="{{ url_for('ranking') }}">Ranking</a>
                     </li>
                 </ul>
-
+                <form class="d-flex mx-3" action="{{ url_for('buscar') }}" method="GET">
+                    <div class="input-group">
+                        <input class="form-control form-control-sm bg-black text-white border-secondary" type="search"
+                            name="q" placeholder="Buscar..." aria-label="Search">
+                        <button class="btn btn-sm btn-outline-secondary" type="submit">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </form>
                 <ul class="navbar-nav align-items-center">
                     {% if current_user.is_authenticated %}
                     <li class="nav-item dropdown">
@@ -187,57 +200,63 @@
         {% block content %}{% endblock %}
     </div>
 
-    <footer>
+    <footer class="bg-black text-white border-top border-secondary mt-auto py-5">
         <div class="container">
             <div class="row gy-4">
-                <div class="col-lg-5 col-md-6">
-                    <h5 class="text-white footer-brand mb-3">
-                        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="" height="30" class="me-2">
-                        MOTORSPORT
-                    </h5>
-                    <p class="text-secondary pe-lg-5">
-                        Tu destino definitivo para el análisis técnico, estadísticas y la emoción de la Fórmula 1,
-                        MotoGP y el WEC.
-                        Creado por apasionados del motor, para apasionados del motor.
+
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="text-danger fw-bold text-uppercase mb-3">MotorSport</h5>
+                    <p class="small text-secondary">
+                        La plataforma definitiva para los amantes de la velocidad.
+                        Noticias, fichas técnicas y la historia del motor.
                     </p>
                 </div>
 
-                <div class="col-lg-3 col-md-6">
-                    <h6 class="text-danger fw-bold text-uppercase mb-3">Explorar</h6>
-                    <ul class="list-unstyled">
-                        <li><a href="{{ url_for('home') }}" class="footer-link">Inicio</a></li>
-                        <li><a href="{{ url_for('noticias') }}" class="footer-link">Últimas Noticias</a></li>
-                        <li><a href="{{ url_for('vehiculos') }}" class="footer-link">Garaje de Vehículos</a></li>
-                        <li><a href="{{ url_for('ranking') }}" class="footer-link">Salón de la Fama</a></li>
-                    </ul>
-                </div>
-
                 <div class="col-lg-4 col-md-6">
-                    <h6 class="text-danger fw-bold text-uppercase mb-3">Información</h6>
-                    <ul class="list-unstyled">
-                        <li><a href="#" class="footer-link"><i class="bi bi-shield-check me-2"></i>Política de
-                                Privacidad</a></li>
-                        <li><a href="#" class="footer-link"><i class="bi bi-file-text me-2"></i>Términos y
-                                Condiciones</a></li>
-                        <li><a href="#" class="footer-link"><i class="bi bi-cookie me-2"></i>Política de Cookies</a>
-                        </li>
-                        <li class="mt-3 text-secondary small"><i class="bi bi-envelope me-2"></i>
-                            contacto@motorsport.local</li>
+                    <h5 class="text-danger fw-bold text-uppercase mb-3">Navegación</h5>
+                    <ul class="list-unstyled text-secondary">
+                        <li><a href="{{ url_for('home') }}"
+                                class="text-decoration-none text-secondary hover-white">Inicio</a></li>
+                        <li><a href="{{ url_for('noticias') }}"
+                                class="text-decoration-none text-secondary hover-white">Noticias</a></li>
+                        <li><a href="{{ url_for('vehiculos') }}"
+                                class="text-decoration-none text-secondary hover-white">Garaje</a></li>
+                        <li><a href="{{ url_for('quiz') }}"
+                                class="text-decoration-none text-secondary hover-white">Quiz</a></li>
                     </ul>
                 </div>
-            </div>
-        </div>
 
-        <div class="footer-bottom text-center">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-md-6 text-md-start">
-                        &copy; 2025 MotorSport IA. Todos los derechos reservados.
-                    </div>
-                    <div class="col-md-6 text-md-end mt-2 mt-md-0">
-                        <span class="text-muted small">Desarrollado con Flask & Bootstrap 5</span>
-                    </div>
+                <div class="col-lg-4 col-md-12">
+                    <h5 class="text-danger fw-bold text-uppercase mb-3">INFORMACIÓN</h5>
+                    <ul class="list-unstyled">
+
+                        <li class="mb-2">
+                            <a href="{{ url_for('privacidad') }}"
+                                class="text-decoration-none text-secondary d-flex align-items-center gap-2 hover-white">
+                                <i class="bi bi-shield-check fs-5"></i> Política de Privacidad
+                            </a>
+                        </li>
+
+                        <li class="mb-2">
+                            <a href="{{ url_for('terminos') }}"
+                                class="text-decoration-none text-secondary d-flex align-items-center gap-2 hover-white">
+                                <i class="bi bi-file-text fs-5"></i> Términos y Condiciones
+                            </a>
+                        </li>
+
+                        <li class="mb-2">
+                            <a href="{{ url_for('cookies') }}"
+                                class="text-decoration-none text-secondary d-flex align-items-center gap-2 hover-white">
+                                <i class="bi bi-cookie fs-5"></i> Política de Cookies
+                            </a>
+                        </li>
+                    </ul>
                 </div>
+
+            </div>
+
+            <div class="text-center text-secondary small mt-5 border-top border-secondary pt-4">
+                &copy; 2025 MotorSport Project. Todos los derechos reservados.
             </div>
         </div>
     </footer>

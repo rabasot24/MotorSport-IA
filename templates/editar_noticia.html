@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Noticia - Admin{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card bg-dark border-secondary shadow-lg">
+                <div class="card-header bg-warning text-dark fw-bold d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-pencil-square"></i> Editando Noticia</span>
+                    <a href="{{ url_for('admin_panel') }}" class="btn btn-sm btn-outline-dark"><i
+                            class="bi bi-x-lg"></i> Cancelar</a>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <div class="mb-3">
+                            <label class="form-label text-white">Título del Artículo</label>
+                            <input type="text" name="titulo" class="form-control bg-black text-white border-secondary"
+                                value="{{ noticia.title }}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label text-white">URL de la Imagen</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-secondary border-secondary text-white"><i
+                                        class="bi bi-image"></i></span>
+                                <input type="url" name="imagen"
+                                    class="form-control bg-black text-white border-secondary"
+                                    value="{{ noticia.image }}" required>
+                            </div>
+                            <div class="mt-2">
+                                <small class="text-muted">Imagen actual:</small><br>
+                                <img src="{{ noticia.image }}" alt="Preview"
+                                    style="height: 100px; border-radius: 5px; margin-top: 5px;">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label text-white">Contenido</label>
+                            <textarea name="contenido" rows="10"
+                                class="form-control bg-black text-white border-secondary"
+                                required>{{ noticia.content }}</textarea>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-warning fw-bold">Guardar Cambios</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

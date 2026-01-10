@@ -38,6 +38,7 @@
                 crossorigin="anonymous"></audio>
 
             <form id="quizForm" action="{{ url_for('quiz_submit') }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <input type="hidden" name="pregunta_id" value="{{ pregunta.id }}">
                 <div class="d-grid gap-3">
                     {% for opcion in opciones %}

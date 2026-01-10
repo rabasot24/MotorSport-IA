@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Terminos y condiciones - MotorSport{% endblock %}
+
+{% block content %}
+<div class="container py-5 text-white">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <h1 class="display-5 fw-bold text-danger mb-4">Términos y condiciones</h1>
+            
+            <div class="card bg-dark border-secondary p-4 mb-4">
+                <h4 class="text-white">1. Protección de Datos</h4>
+                <p class="text-secondary">
+                    En MotorSport nos tomamos muy en serio la privacidad de tus datos. 
+                    Tus credenciales están encriptadas y no compartimos información con terceros.
+                </p>
+
+                <h4 class="text-white mt-4">2. Uso de la Información</h4>
+                <p class="text-secondary">
+                    Utilizamos tus datos exclusivamente para gestionar tu perfil, tus puntuaciones 
+                    en el Quiz y permitirte guardar vehículos en favoritos.
+                </p>
+
+                <h4 class="text-white mt-4">3. Tus Derechos</h4>
+                <p class="text-secondary">
+                    Tienes derecho a acceder, rectificar y eliminar tus datos en cualquier momento 
+                    desde el panel de usuario.
+                </p>
+            </div>
+
+            <a href="{{ url_for('home') }}" class="btn btn-outline-light">
+                <i class="bi bi-arrow-left"></i> Volver al Inicio
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

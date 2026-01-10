@@ -30,6 +30,7 @@
                         <div class="tab-pane fade show active" id="login" role="tabpanel">
                             <h3 class="mb-4 text-center">Bienvenido de nuevo</h3>
                             <form method="POST" action="{{ url_for('login') }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                 <div class="mb-3">
                                     <label class="form-label">Email</label>
                                     <input type="email" name="email"
@@ -51,6 +52,7 @@
                         <div class="tab-pane fade" id="register" role="tabpanel">
                             <h3 class="mb-4 text-center">Crea tu Licencia</h3>
                             <form method="POST" action="{{ url_for('register') }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                 <div class="mb-3">
                                     <label class="form-label">Nombre de Usuario (Piloto)</label>
                                     <input type="text" name="username"
