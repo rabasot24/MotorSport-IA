@@ -61,5 +61,5 @@ Sigue estos pasos para ejecutar el proyecto en tu entorno local:
 
 ### 1. Clonar el repositorio
 ```bash
-git clone [https://github.com/TU_USUARIO/MotorSport.git](https://github.com/TU_USUARIO/MotorSport.git)
+git clone [https://github.com/rabasot24/MotorSport-IA.git](https://github.com/rabasot24/MotorSport-IA.git)
 cd MotorSport
