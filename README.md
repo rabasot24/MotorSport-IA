@@ -1,48 +1,65 @@
-MotorSport Portal Web
-MotorSport es una plataforma interactiva especializada en automovilismo, diseñada para ofrecer a los aficionados una experiencia completa centrada en la información, el entretenimiento y la participación comunitaria.
+# 🏎️ MotorSport - Portal del Automovilismo
 
-¿Qué puedes hacer en la web?
-Consultar noticias: Accede a las últimas novedades, competiciones y avances tecnológicos del mundo del motor.​
+**MotorSport** es una plataforma web interactiva especializada en el mundo del motor. Diseñada para ofrecer una experiencia completa a los aficionados, la aplicación combina información actualizada, una base de datos enciclopédica de vehículos legendarios y un sistema de participación comunitaria mediante gamificación.
 
-Explorar fichas de vehículos legendarios: Encuentra información técnica y visual de coches de Fórmula 1, prototipos de resistencia, autos de rally y vehículos emblemáticos de otras disciplinas. Cada ficha incluye especificaciones, curiosidades y fotografías.​
+El proyecto ha sido desarrollado como una aplicación Full-Stack utilizando **Python y Flask**, priorizando el rendimiento, la escalabilidad y una interfaz de usuario moderna.
 
-Escuchar sonidos de motores: Disfruta de una galería interactiva con grabaciones auténticas de motores icónicos, pensada para los entusiastas del sonido automovilístico.​
+---
 
-Gestionar tu perfil: Regístrate para crear y personalizar tu perfil, guardar modelos favoritos y acceder a funcionalidades exclusivas para usuarios registrados.​
+## 🚀 Funcionalidades Principales
 
-Participar en quiz y retos: Pon a prueba tus conocimientos sobre vehículos, circuitos y momentos históricos del motorsport con cuestionarios y juegos educativos.​
+### 📖 Área de Información y Contenidos
+* **Actualidad del Motor:** Blog de noticias con las últimas novedades de F1, WEC y Rally.
+* **Showroom de Vehículos:** Fichas técnicas detalladas con especificaciones, historia y galería visual.
+* **Experiencia Sonora:** Galería interactiva con grabaciones auténticas de motores icónicos (V10, V12, Boxer, etc.).
 
-Administración de contenidos: Los usuarios autorizados pueden acceder a un panel para gestionar, editar y publicar noticias o fichas de vehículos, asegurando una web colaborativa y actualizada.​
+### 👤 Área de Usuario y Comunidad
+* **Gestión de Perfiles:** Sistema seguro de Registro e Inicio de Sesión para personalizar la experiencia.
+* **Quiz & Ranking:** Juego de preguntas interactivo que pone a prueba el conocimiento del usuario, con una tabla de clasificación global competitiva.
+* **Sistema de Comentarios:** Posibilidad de debatir en las noticias e interactuar con otros usuarios.
 
-Tipos de vehículos presentes en MotorSport
-Monoplazas de Fórmula 1: Modelos históricos y modernos de principales escuderías.
+### 🛠️ Administración
+* **Panel de Control:** Los usuarios con rol de administrador pueden crear, editar y eliminar noticias y vehículos mediante una interfaz gráfica, sin tocar código.
 
-Prototipos de resistencia: Autos diseñados para pruebas de larga duración como Le Mans.
+---
 
-Coches de rally: Vehículos míticos del Campeonato Mundial de Rally.
+## 🏎️ Categorías del Catálogo
 
-Superdeportivos y clásicos: Vehículos que marcaron tendencia fuera de las pistas.​
+El garaje virtual de MotorSport abarca las disciplinas más importantes:
 
-Cada modelo incluye detalles técnicos, imágenes y curiosidades para que el usuario descubra su relevancia y legado en la historia del automovilismo.​
+* **🏎️ Fórmula 1:** Monoplazas históricos y modernos de las principales escuderías.
+* **⏱️ Resistencia (WEC):** Prototipos diseñados para pruebas de larga duración como Le Mans.
+* **🌲 Rally (WRC):** Vehículos míticos adaptados a terrenos extremos.
+* **💎 Superdeportivos y Clásicos:** Joyas de la ingeniería que marcaron tendencia fuera de las pistas.
 
-Tecnologías empleadas
-Frontend: HTML, CSS y JavaScript con frameworks modernos (React, Vue.js)
+---
 
-Backend: Node.js o Django
+## 💻 Tecnologías Empleadas
 
-Base de datos: MySQL o PostgreSQL
+Este proyecto ha sido construido utilizando un stack tecnológico robusto y moderno:
 
-Control de versiones: Git​
+### Backend (Lógica del Servidor)
+* **Python 3.13:** Lenguaje principal.
+* **Flask:** Framework web ligero y modular.
+* **SQLAlchemy (ORM):** Gestión de base de datos relacional.
+* **Flask-Login:** Gestión de sesiones y seguridad de usuarios.
 
-¿Cómo contribuir?
-Haz fork del repositorio y clona el proyecto.
+### Frontend (Interfaz de Usuario)
+* **HTML5 & CSS3:** Estructura y diseño.
+* **Bootstrap 5:** Framework para diseño responsivo (adaptable a Móvil y PC) y modo oscuro.
+* **JavaScript (Vanilla):** Interactividad en el cliente (AJAX, validaciones).
+* **Jinja2:** Motor de plantillas para renderizado dinámico.
 
-Crea una rama para tu propuesta.
+### Base de Datos
+* **SQLite:** Base de datos relacional ligera y portátil (ideal para despliegue rápido).
 
-Realiza cambios y documentación descriptiva.
+---
 
-Envía tu pull request para revisión.
+## 🔧 Instalación y Puesta en Marcha
 
-Consulta la guía de contribución para más información.
+Sigue estos pasos para ejecutar el proyecto en tu entorno local:
 
-MotorSport Portal Web es el punto de encuentro digital para aprender, disfrutar y compartir la pasión por el automovilismo de forma participativa y segura.​
+### 1. Clonar el repositorio
+```bash
+git clone [https://github.com/TU_USUARIO/MotorSport.git](https://github.com/TU_USUARIO/MotorSport.git)
+cd MotorSport
