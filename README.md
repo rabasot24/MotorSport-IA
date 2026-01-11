@@ -123,18 +123,3 @@ Para facilitar la corrección y pruebas, la base de datos incluye estas cuentas 
 | **ADMINISTRADOR** | `admin`   | `admin123` | Acceso total al Panel (Crear/Editar/Borrar Noticias, Coches y Usuarios). |
 | **USUARIO**       | `usuario` | `1234`     | Acceso a Quiz, Comentarios y Perfil.                                     |
 
----
-
-## 📂 Estructura del Proyecto
-
-```text
-MotorSport-IA/
-├── app/
-│   ├── static/          # CSS, JS, Imágenes
-│   ├── templates/       # HTML (Jinja2)
-│   └── models.py        # Base de datos
-├── instance/            # Base de datos SQLite (motor.db)
-├── app.py               # Lógica principal
-├── config.py            # Configuración
-├── generar_base_datos.py # Script de generación de tablas y datos
-└── requirements.txt     # Librerías necesarias
