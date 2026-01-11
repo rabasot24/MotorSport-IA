@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MotorSport - Oportunidad de Negocio</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        /* Slides */
+        .slide {
+            display: none;
+            height: 100vh;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem 5rem;
+            opacity: 0;
+            transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .slide.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        /* Branding */
+        .text-brand {
+            color: #ff3b30 !important;
+        }
+
+        /* Rojo Vibrante */
+        .bg-brand {
+            background-color: #ff3b30 !important;
+        }
+
+        .border-brand {
+            border-color: #ff3b30 !important;
+        }
+
+        /* Tipografía */
+        h1 {
+            font-size: 5.5rem;
+            font-weight: 800;
+            letter-spacing: -2px;
+            text-transform: uppercase;
+        }
+
+        h2 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 2.5rem;
+        }
+
+        h3 {
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        /* Tarjetas */
+        .card-custom {
+            background: linear-gradient(180deg, #111, #0a0a0a);
+            border: 1px solid #333;
+            border-radius: 16px;
+            padding: 2.5rem;
+            height: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .card-custom:hover {
+            transform: translateY(-8px);
+            border-color: #ff3b30;
+            box-shadow: 0 15px 40px rgba(255, 59, 48, 0.15);
+        }
+
+        /* Iconos */
+        .icon-circle {
+            width: 70px;
+            height: 70px;
+            background: rgba(255, 59, 48, 0.1);
+            color: #ff3b30;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Controles */
+        .controls {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+
+        .progress-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            background: #ff3b30;
+            width: 0%;
+            transition: width 0.5s;
+        }
+
+        .slide-number {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            color: #555;
+            font-weight: bold;
+        }
+
+        /* Animaciones */
+        .fade-in-up {
+            animation: fadeInUp 0.8s forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .delay-1 {
+            animation-delay: 0.2s;
+        }
+
+        .delay-2 {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 1. PORTADA COMERCIAL -->
+    <div class="slide active text-center" id="s1">
+        <h1 class="fade-in-up">MOTOR<span class="text-brand">SPORT</span></h1>
+        <h3 class="text-secondary mt-3 mb-5 fade-in-up delay-1">LA REVOLUCIÓN DIGITAL DEL MOTOR</h3>
+        <div class="mt-5 pt-4 d-inline-block fade-in-up delay-2 border-top border-secondary">
+            <p class="h5 mb-2 text-white">Presentación Ejecutiva</p>
+            <p class="text-secondary small text-uppercase spacing-2">Por: <strong>Alejandro Rabasot</strong></p>
+        </div>
+    </div>
+
+    <!-- 2. LA OPORTUNIDAD (MERCADO) -->
+    <div class="slide" id="s2">
+        <h2 class="text-white">La Oportunidad de Mercado</h2>
+        <div class="row g-5 w-100 align-items-center mt-2">
+            <div class="col-md-5">
+                <p class="fs-4 lh-base">El aficionado actual vive una experiencia <strong>fragmentada</strong>. Consume
+                    noticias en X, busca datos en Wikipedia y ve carreras en TV.</p>
+                <div class="p-3 border-start border-4 border-danger mt-4 bg-dark bg-opacity-25">
+                    <p class="mb-0 text-white fst-italic">"MotorSport unifica la experiencia en un solo destino
+                        digital."</p>
+                </div>
+            </div>
+            <div class="col-md-7">
+                <div class="row g-4">
+                    <div class="col-6">
+                        <div class="card-custom text-center">
+                            <div class="display-3 fw-bold text-brand">+45%</div>
+                            <div class="text-muted text-uppercase mt-2">Interés Global F1</div>
+                            <small class="text-secondary d-block mt-2">Crecimiento anual en redes</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="card-custom text-center">
+                            <div class="display-3 fw-bold text-white">360°</div>
+                            <div class="text-muted text-uppercase mt-2">Plataforma Única</div>
+                            <small class="text-secondary d-block mt-2">Noticias + Datos + Juego</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. EL PRODUCTO (SOLUCIÓN) -->
+    <div class="slide" id="s3">
+        <h2 class="text-white">Nuestra Solución</h2>
+        <p class="text-secondary mb-5 lead">Un ecosistema digital diseñado para retener y monetizar a la audiencia.</p>
+        <div class="row g-4 w-100">
+            <div class="col-md-4">
+                <div class="card-custom">
+                    <div class="icon-circle"><i class="bi bi-newspaper"></i></div>
+                    <h4>Hub de Contenidos</h4>
+                    <p class="text-secondary small">Noticias en tiempo real categorizadas por disciplinas (F1, WEC,
+                        Rally) para mantener al usuario informado diariamente.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card-custom">
+                    <div class="icon-circle"><i class="bi bi-speedometer2"></i></div>
+                    <h4>Base de Datos Viva</h4>
+                    <p class="text-secondary small">Fichas técnicas interactivas con especificaciones y <strong>sonido
+                            real de motores</strong>. Un museo digital único.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card-custom">
+                    <div class="icon-circle"><i class="bi bi-controller"></i></div>
+                    <h4>Gamificación</h4>
+                    <p class="text-secondary small">Sistema de Quiz y Ranking Mundial que fomenta la competitividad y
+                        aumenta el tiempo de permanencia en la web.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. VENTAJAS COMPETITIVAS (TECNOLOGÍA) -->
+    <div class="slide" id="s4">
+        <h2 class="text-white">Ventaja Competitiva</h2>
+        <div class="row w-100 mt-4">
+            <div class="col-md-6">
+                <ul class="list-unstyled">
+                    <li class="mb-4 d-flex align-items-start">
+                        <i class="bi bi-check-circle-fill text-brand fs-4 me-3"></i>
+                        <div>
+                            <h4 class="text-white mb-1">Escalabilidad Garantizada</h4>
+                            <p class="text-secondary mb-0">Arquitectura modular preparada para soportar picos de tráfico
+                                durante los Grandes Premios.</p>
+                        </div>
+                    </li>
+                    <li class="mb-4 d-flex align-items-start">
+                        <i class="bi bi-shield-fill-check text-brand fs-4 me-3"></i>
+                        <div>
+                            <h4 class="text-white mb-1">Seguridad de Datos</h4>
+                            <p class="text-secondary mb-0">Protección avanzada de usuarios y transacciones. Cumplimiento
+                                con estándares de privacidad.</p>
+                        </div>
+                    </li>
+                    <li class="d-flex align-items-start">
+                        <i class="bi bi-phone-fill text-brand fs-4 me-3"></i>
+                        <div>
+                            <h4 class="text-white mb-1">Experiencia Mobile-First</h4>
+                            <p class="text-secondary mb-0">Diseño optimizado para móviles, donde reside el 85% de la
+                                audiencia joven del motor.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-6 d-flex align-items-center justify-content-center">
+                <div class="text-center p-5 border border-secondary rounded-circle position-relative">
+                    <i class="bi bi-rocket-takeoff text-white" style="font-size: 6rem;"></i>
+                    <div class="mt-3 text-brand fw-bold text-uppercase">High Performance</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. DEMOSTRACIÓN -->
+    <div class="slide text-center" id="s5">
+        <div class="mb-4 text-brand">
+            <i class="bi bi-display" style="font-size: 5rem;"></i>
+        </div>
+        <h1 class="display-3 fw-bold text-white">DEMOSTRACIÓN</h1>
+        <p class="lead text-secondary mt-3 w-75 mx-auto">Veamos el producto en funcionamiento real.</p>
+        <hr class="w-25 mx-auto border-brand my-5">
+        <div class="row justify-content-center gap-4 text-start text-white-50">
+            <div class="col-auto"><i class="bi bi-dot text-brand"></i> Navegación Fluida</div>
+            <div class="col-auto"><i class="bi bi-dot text-brand"></i> Experiencia Sonora</div>
+            <div class="col-auto"><i class="bi bi-dot text-brand"></i> Panel de Gestión</div>
+        </div>
+    </div>
+
+    <!-- 6. MODELO DE NEGOCIO -->
+    <div class="slide" id="s6">
+        <h2 class="text-white mb-5">Modelo de Rentabilidad</h2>
+        <div class="row g-5 w-100">
+            <!-- Fuente 1 -->
+            <div class="col-md-4">
+                <div class="card-custom text-center">
+                    <h1 class="display-4 fw-bold text-brand mb-2">1</h1>
+                    <h5 class="text-white mt-3">Marketing de Afiliados</h5>
+                    <p class="text-secondary small mt-3 px-2">
+                        Monetización directa mediante enlaces de compra en las fichas de vehículos (Merchandising,
+                        Maquetas).
+                    </p>
+                    <span class="badge bg-dark text-success border border-success mt-2">Alto Margen</span>
+                </div>
+            </div>
+            <!-- Fuente 2 -->
+            <div class="col-md-4">
+                <div class="card-custom text-center">
+                    <h1 class="display-4 fw-bold text-white mb-2">2</h1>
+                    <h5 class="text-white mt-3">Publicidad de Nicho</h5>
+                    <p class="text-secondary small mt-3 px-2">
+                        Espacios publicitarios programáticos para marcas del sector automoción (Seguros, Recambios).
+                    </p>
+                    <span class="badge bg-dark text-info border border-info mt-2">Volumen</span>
+                </div>
+            </div>
+            <!-- Fuente 3 -->
+            <div class="col-md-4">
+                <div class="card-custom text-center">
+                    <h1 class="display-4 fw-bold text-brand mb-2">3</h1>
+                    <h5 class="text-white mt-3">Suscripción PRO</h5>
+                    <p class="text-secondary small mt-3 px-2">
+                        Modelo recurrente para eliminar anuncios y acceder a sorteos exclusivos.
+                    </p>
+                    <span class="badge bg-dark text-warning border border-warning mt-2">Recurrente</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7. ESTRATEGIA DE CRECIMIENTO -->
+    <div class="slide" id="s7">
+        <h2 class="text-white mb-5">Estrategia de Crecimiento</h2>
+        <div class="row w-75 text-center">
+            <div class="col-4 position-relative">
+                <div class="p-4 border border-secondary rounded mb-3">
+                    <h5 class="text-white">Fase 1</h5>
+                    <small class="text-secondary">Lanzamiento MVP Web</small>
+                </div>
+            </div>
+            <div class="col-4 position-relative">
+                <div class="p-4 border border-secondary rounded mb-3">
+                    <h5 class="text-white">Fase 2</h5>
+                    <small class="text-secondary">App Nativa (iOS/Android)</small>
+                </div>
+            </div>
+            <div class="col-4 position-relative">
+                <div class="p-4 border border-secondary rounded mb-3">
+                    <h5 class="text-white">Fase 3</h5>
+                    <small class="text-secondary">Marketplace C2C</small>
+                </div>
+            </div>
+        </div>
+        <div class="mt-5 text-center w-100 mx-auto">
+            <p class="display-5 text-brand fw-bold mb-2">Objetivo 2026</p>
+            <p class="fs-4 text-white">Convertirnos en la plataforma de referencia hispana del motor.</p>
+        </div>
+    </div>
+
+    <!-- 8. CIERRE -->
+    <div class="slide text-center" id="s8">
+        <h1 class="text-white mb-3">¿Hablamos?</h1>
+        <p class="lead text-secondary mb-5">Estamos listos para acelerar.</p>
+
+        <div class="d-flex justify-content-center gap-3">
+            <a href="https://github.com/rabasot24/MotorSport-IA" target="_blank"
+                class="btn btn-outline-light rounded-pill px-5 py-3">
+                <i class="bi bi-github me-2"></i> GitHub
+            </a>
+            <button class="btn btn-danger rounded-pill px-5 py-3" onclick="showSlide(0)">
+                <i class="bi bi-arrow-counterclockwise me-2"></i> Inicio
+            </button>
+        </div>
+    </div>
+
+    <!-- UI -->
+    <div class="controls">
+        <button class="btn btn-outline-secondary rounded-circle me-2" onclick="prev()"><i
+                class="bi bi-chevron-left"></i></button>
+        <button class="btn btn-danger rounded-circle" onclick="next()"><i class="bi bi-chevron-right"></i></button>
+    </div>
+    <div class="slide-number" id="slideNumber"></div>
+    <div class="progress-bar" id="progressBar"></div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const progressBar = document.getElementById('progressBar');
+        const slideNumber = document.getElementById('slideNumber');
+
+        /**
+         * Muestra una diapositiva específica y actualiza el estado global.
+         * @param {number} n - Índice de la diapositiva.
+         */
+        function showSlide(n) {
+            currentSlide = n;
+            slides.forEach(s => s.classList.remove('active'));
+            slides[n].classList.add('active');
+            progressBar.style.width = ((n + 1) / slides.length * 100) + '%';
+            slideNumber.innerText = `${n + 1} / ${slides.length}`;
+        }
+
+        function next() {
+            if (currentSlide < slides.length - 1) {
+                showSlide(currentSlide + 1);
+            }
+        }
+
+        function prev() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "ArrowRight" || e.key === "Space" || e.key === "Enter") next();
+            if (e.key === "ArrowLeft" || e.key === "Backspace") prev();
+        });
+
+        // Iniciar en la primera diapositiva
+        showSlide(0);
+    </script>
+</body>
+
+</html>
