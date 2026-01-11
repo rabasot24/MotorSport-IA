@@ -19,7 +19,7 @@ El proyecto ha sido desarrollado como una aplicación Full-Stack utilizando **Py
 * **Sistema de Comentarios:** Posibilidad de debatir en las noticias e interactuar con otros usuarios.
 
 ### 🛠️ Administración
-* **Panel de Control:** Los usuarios con rol de administrador pueden crear, editar y eliminar noticias y vehículos mediante una interfaz gráfica, sin tocar código.
+* **Panel de Control:** Los usuarios con rol de administrador pueden crear, editar y eliminar noticias, vehículos y **usuarios** mediante una interfaz gráfica, sin tocar código.
 
 ---
 
@@ -42,7 +42,7 @@ Este proyecto ha sido construido utilizando un stack tecnológico robusto y mode
 * **Python 3.13:** Lenguaje principal.
 * **Flask:** Framework web ligero y modular.
 * **SQLAlchemy (ORM):** Gestión de base de datos relacional.
-* **Flask-Login:** Gestión de sesiones y seguridad de usuarios.
+* **Flask-Login / Flask-WTF:** Gestión de sesiones y seguridad de usuarios.
 
 ### Frontend (Interfaz de Usuario)
 * **HTML5 & CSS3:** Estructura y diseño.
@@ -55,11 +55,86 @@ Este proyecto ha sido construido utilizando un stack tecnológico robusto y mode
 
 ---
 
-## 🔧 Instalación y Puesta en Marcha
+## 🔧 Guía de Instalación y Despliegue
 
-Sigue estos pasos para ejecutar el proyecto en tu entorno local:
+Sigue estos pasos detallados para ejecutar el proyecto en tu entorno local sin errores:
 
 ### 1. Clonar el repositorio
-```bash
-git clone [https://github.com/rabasot24/MotorSport-IA.git](https://github.com/rabasot24/MotorSport-IA.git)
-cd MotorSport
+
+    git clone https://github.com/rabasot24/MotorSport-IA.git
+    cd MotorSport-IA
+
+### 2. Crear y Activar Entorno Virtual (IMPORTANTE)
+Es necesario crear un entorno aislado para las librerías del proyecto.
+
+* **En Windows:**
+    1. Crear el entorno:
+       
+            python -m venv venv
+
+    2. Activarlo:
+       
+            .\venv\Scripts\activate
+
+    > **⚠️ SOLUCIÓN DE ERROR EN WINDOWS:**
+    > Si al intentar activar (`.\venv\Scripts\activate`) te sale un error rojo diciendo *"la ejecución de scripts está deshabilitada"*, ejecuta este comando para dar permiso temporalmente y vuelve a intentar activar:
+    > 
+    >     Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+
+* **En Mac / Linux:**
+
+        python3 -m venv venv
+        source venv/bin/activate
+
+    *(Sabrás que funciona porque verás `(venv)` al inicio de la terminal).*
+
+### 3. Instalar Dependencias
+Una vez activado el entorno, instala las librerías necesarias:
+
+    pip install -r requirements.txt
+
+### 4. Configuración de Seguridad (.env)
+El proyecto necesita una clave secreta para funcionar correctamente.
+1. Crea un archivo nuevo en la raíz del proyecto (junto a `app.py`) llamado **`.env`**.
+2. Abre el archivo con el bloc de notas y pega el siguiente código dentro:
+
+        SECRET_KEY="clave-secreta-desarrollo"
+
+### 5. Base de Datos
+El proyecto ya incluye una base de datos pre-cargada en la carpeta `instance/`. 
+Si necesitas regenerarla desde cero (restablecer fábrica), puedes ejecutar:
+
+    python generar_base_datos.py
+
+### 6. Ejecutar la Aplicación
+
+    python app.py
+
+Abre tu navegador en: 👉 **`http://127.0.0.1:5000`**
+
+---
+
+## 🔐 Credenciales de Acceso
+
+Para facilitar la corrección y pruebas, la base de datos incluye estas cuentas por defecto:
+
+| Rol               | Usuario   | Contraseña | Permisos                                                                 |
+| :---------------- | :-------- | :--------- | :----------------------------------------------------------------------- |
+| **ADMINISTRADOR** | `admin`   | `admin123` | Acceso total al Panel (Crear/Editar/Borrar Noticias, Coches y Usuarios). |
+| **USUARIO**       | `usuario` | `1234`     | Acceso a Quiz, Comentarios y Perfil.                                     |
+
+---
+
+## 📂 Estructura del Proyecto
+
+```text
+MotorSport-IA/
+├── app/
+│   ├── static/          # CSS, JS, Imágenes
+│   ├── templates/       # HTML (Jinja2)
+│   └── models.py        # Base de datos
+├── instance/            # Base de datos SQLite (motor.db)
+├── app.py               # Lógica principal
+├── config.py            # Configuración
+├── generar_base_datos.py # Script de generación de tablas y datos
+└── requirements.txt     # Librerías necesarias
