@@ -120,6 +120,6 @@ Para facilitar la corrección y pruebas, la base de datos incluye estas cuentas 
 
 | Rol               | Usuario   | Contraseña | Permisos                                                                 |
 | :---------------- | :-------- | :--------- | :----------------------------------------------------------------------- |
-| **ADMINISTRADOR** | `admin`   | `admin123` | Acceso total al Panel (Crear/Editar/Borrar Noticias, Coches y Usuarios). |
+| **ADMINISTRADOR** | `admin@motorsport.com`   | `1234` | Acceso total al Panel (Crear/Editar/Borrar Noticias, Coches y Usuarios). |
 | **USUARIO**       | `usuario` | `1234`     | Acceso a Quiz, Comentarios y Perfil.                                     |
 
