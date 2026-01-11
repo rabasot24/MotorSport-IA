@@ -59,7 +59,7 @@ def noticias():
     return render_template("noticias.html", paginacion=paginacion)
 
 
-# --- BUSCADOR GLOBAL (CORREGIDO) ---
+# --- BUSCADOR GLOBAL ---
 @app.route("/buscar")
 def buscar():
     query = request.args.get("q")
@@ -302,6 +302,7 @@ def quiz_final():
 # --- ADMIN PANEL ---
 
 
+# >>> ACTUALIZADO: Ahora carga también los usuarios <<<
 @app.route("/admin")
 @login_required
 def admin_panel():
@@ -309,14 +310,42 @@ def admin_panel():
         flash("Acceso denegado.")
         return redirect(url_for("perfil"))
 
-    # Cargamos TODO: Noticias, Categorías y Vehículos
+    # Cargamos TODO: Noticias, Categorías, Vehículos Y USUARIOS
     noticias = Article.query.order_by(Article.date.desc()).all()
     categorias = Category.query.all()
-    vehiculos = Vehicle.query.order_by(Vehicle.id.desc()).all()  # Nuevo
+    vehiculos = Vehicle.query.order_by(Vehicle.id.desc()).all()
+    usuarios = User.query.all()  # <--- Nuevo: Lista de usuarios
 
+    # Pasamos 'users' a la plantilla
     return render_template(
-        "admin.html", noticias=noticias, categorias=categorias, vehiculos=vehiculos
+        "admin.html",
+        noticias=noticias,
+        categorias=categorias,
+        vehiculos=vehiculos,
+        users=usuarios,
     )
+
+
+# >>> NUEVO: Ruta para eliminar usuarios <<<
+@app.route("/admin/eliminar_usuario/<int:id>", methods=["POST"])
+@login_required
+def eliminar_usuario(id):
+    if current_user.role != "admin":
+        return redirect(url_for("home"))
+
+    usuario_a_borrar = User.query.get_or_404(id)
+
+    # PROTECCIÓN: No dejar que el admin se borre a sí mismo
+    if usuario_a_borrar.id == current_user.id:
+        flash("¡No puedes eliminar tu propia cuenta de administrador!", "danger")
+    else:
+        db.session.delete(usuario_a_borrar)
+        db.session.commit()
+        flash(
+            f"Usuario {usuario_a_borrar.username} eliminado correctamente.", "success"
+        )
+
+    return redirect(url_for("admin_panel"))
 
 
 @app.route("/admin/crear-noticia", methods=["POST"])
@@ -405,15 +434,8 @@ def crear_vehiculo():
 
     # 1. Gestión de imagen (automática o manual)
     imagen_url = request.form.get("imagen")
-    if not imagen_url:
-        # Importante: asegúrate de tener 'import requests' arriba del todo
-        try:
-            imagen_url = obtener_imagen_wikipedia(f"{fabricante} {nombre}")
-        except:
-            imagen_url = None
 
-    # 2. LIMPIEZA DE DATOS NUMÉRICOS (Aquí estaba el error)
-    # Si el campo viene vacío (""), lo convertimos a None. Si no, a int/float.
+    # 2. LIMPIEZA DE DATOS NUMÉRICOS
     hp_input = request.form.get("cv")
     speed_input = request.form.get("velocidad")
     accel_input = request.form.get("aceleracion")

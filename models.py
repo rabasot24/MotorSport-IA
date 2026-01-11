@@ -17,8 +17,10 @@ class User(UserMixin, db.Model):
     settings = db.Column(db.JSON, nullable=True)
     score = db.Column(db.Integer, default=0)
 
-    # RELACIÓN: Un usuario tiene muchos comentarios
-    comments = db.relationship("Comment", backref="author_rel", lazy=True)
+    # --- CORRECCIÓN AQUÍ: AÑADIDO cascade="all, delete-orphan" ---
+    comments = db.relationship(
+        "Comment", backref="author_rel", lazy=True, cascade="all, delete-orphan"
+    )
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -47,7 +49,6 @@ class Article(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     category_id = db.Column(db.Integer, db.ForeignKey("categories.id"))
 
-    # --- ESTA LÍNEA ES LA QUE FALTA PARA QUE SE VEAN ---
     comments = db.relationship(
         "Comment", backref="article_rel", lazy=True, cascade="all, delete-orphan"
     )

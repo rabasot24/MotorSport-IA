@@ -25,6 +25,12 @@
                 <i class="bi bi-car-front-fill me-2"></i> Vehículos
             </button>
         </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link fw-bold px-4" id="pills-usuarios-tab" data-bs-toggle="pill"
+                data-bs-target="#pills-usuarios" type="button">
+                <i class="bi bi-people-fill me-2"></i> Usuarios
+            </button>
+        </li>
     </ul>
 
     <div class="tab-content" id="pills-tabContent">
@@ -193,6 +199,73 @@
                         {% endfor %}
                     </tbody>
                 </table>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="pills-usuarios">
+            <div class="card bg-dark text-white border-secondary mb-4">
+                <div class="card-header border-secondary text-info fw-bold">
+                    <i class="bi bi-people-fill"></i> Listado de Usuarios
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover border-secondary align-middle">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Usuario</th>
+                                    <th>Email</th>
+                                    <th>Rol</th>
+                                    <th class="text-end">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for usuario in users %}
+                                <tr>
+                                    <td>#{{ usuario.id }}</td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center"
+                                                style="width: 30px; height: 30px;">
+                                                {{ usuario.username[0] | upper }}
+                                            </div>
+                                            {{ usuario.username }}
+                                        </div>
+                                    </td>
+                                    <td>{{ usuario.email }}</td>
+                                    <td>
+                                        {% if usuario.role == 'admin' %}
+                                        <span class="badge bg-danger">ADMIN</span>
+                                        {% else %}
+                                        <span class="badge bg-secondary">USUARIO</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        {% if usuario.id != current_user.id %}
+                                        <form action="{{ url_for('eliminar_usuario', id=usuario.id) }}" method="POST"
+                                            onsubmit="return confirm('¿Seguro que quieres eliminar a {{ usuario.username }}?');"
+                                            style="display: inline;">
+
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-trash"></i> Eliminar
+                                            </button>
+                                        </form>
+                                        {% else %}
+                                        <span class="text-muted small fst-italic">Cuenta actual</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted">No hay usuarios registrados.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
 
