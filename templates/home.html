@@ -60,7 +60,7 @@
                         <div class="mb-3">
                             <span class="badge bg-danger rounded-pill px-3">{{ articulo.category_rel.name if
                                 articulo.category_rel else 'Motor' }}</span>
-                            <small class="text-muted ms-2">{{ articulo.date.strftime('%d %b') }}</small>
+                            <small class="text-light ms-2">{{ articulo.date.strftime('%d %b') }}</small>
                         </div>
                         <h4 class="card-title fw-bold mb-3 h5">{{ articulo.title }}</h4>
                         <p class="card-text text-secondary small flex-grow-1">{{ articulo.content[:100] }}...</p>
